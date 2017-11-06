@@ -1,0 +1,25 @@
+## Login
+POST /login {password}
+POST /logout {session_id}
+POST /password {session_id, password}
+
+## Auto or Manual mode
+POST /force_on {session_id}
+POST /force_off {session_id}
+POST /auto_days {session_id}
+POST /auto_temp {session_id}
+GET /current_mode {session_id}
+
+## Auto Parameters
+GET /auto_days_prog {session_id}
+POST /auto_days_prog {session_id, prog}
+GET /auto_temp {session_id}
+POST /auto_temp {session_id, temp}
+
+## Diagnostics
+GET /temp {session_id}
+GET /version {session_id}
+POST /time {session_id, area}
+GET /time {session_id}
+POST /identifier {session_id, string}
+GET /identifier {session_id}
