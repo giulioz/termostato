@@ -1,25 +1,26 @@
+## Errors
+401= login, wrong password
+403= not logged in
+
 ## Login
-POST /login {password}
-POST /logout {session_id}
-POST /password {session_id, password}
+POST /login {password} -> if ok then cookie else HTTP 401
+POST /logout {}
+POST /set_password {password}
+GET /login_mode {}
+POST /login_mode {mode} // true, false
 
 ## Auto or Manual mode
-POST /force_on {session_id}
-POST /force_off {session_id}
-POST /auto_days {session_id}
-POST /auto_temp {session_id}
-GET /current_mode {session_id}
-
-## Auto Parameters
-GET /auto_days_prog {session_id}
-POST /auto_days_prog {session_id, prog}
-GET /auto_temp {session_id}
-POST /auto_temp {session_id, temp}
+GET /switching_mode {}
+POST /switching_mode {mode} // on, off, auto_days, auto_temp
+GET /auto_days_prog {}
+POST /auto_days_prog {prog}
+GET /auto_temp {}
+POST /auto_temp {temp}
 
 ## Diagnostics
-GET /temp {session_id}
-GET /version {session_id}
-POST /time {session_id, area}
-GET /time {session_id}
-POST /identifier {session_id, string}
-GET /identifier {session_id}
+GET /temp {}
+GET /version {}
+POST /time {area}
+GET /time {}
+POST /identifier {string}
+GET /identifier {}
