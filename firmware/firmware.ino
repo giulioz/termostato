@@ -221,6 +221,28 @@ void setup() {
             server.send(200, "text/plain", "\"error\"");
         }
     });
+    server.on("/auto_prog", HTTP_GET, [](){
+        StaticJsonBuffer<500> newBuffer;
+        JsonArray& data = newBuffer.createArray();
+        for (int i = 0; i < 24; i++) {
+            data.add(savedData.programHours[i]);
+        }
+        String jsonRes;
+        data.printTo(jsonRes);
+        server.send(200, "text/json", jsonRes);
+    });
+    server.on("/auto_prog", HTTP_POST, [](){
+        StaticJsonBuffer<500> newBuffer;
+        JsonArray& data = newBuffer.parseArray(server.arg("plain"));
+        for (int i = 0; i < 24; i++) {
+            savedData.programHours[i] = data[i];
+        }
+        if (saveConfig()) {
+            server.send(200, "text/plain", "\"ok\"");
+        } else {
+            server.send(200, "text/plain", "\"error\"");
+        }
+    });
     server.begin();
 }
 

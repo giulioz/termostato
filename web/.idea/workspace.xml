@@ -2,22 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e9a63a07-bfa5-4f77-a77a-d5467d53a266" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/css/semantic.min.css" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/css/themes/default/assets/fonts/icons.eot" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/css/themes/default/assets/fonts/icons.otf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/css/themes/default/assets/fonts/icons.svg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/css/themes/default/assets/fonts/icons.ttf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/css/themes/default/assets/fonts/icons.woff" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/css/themes/default/assets/fonts/icons.woff2" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/css/themes/default/assets/images/flags.png" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/js/semantic.min.js" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../api" afterPath="$PROJECT_DIR$/../api" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../firmware/firmware.ino" afterPath="$PROJECT_DIR$/../firmware/firmware.ino" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/style.css" afterPath="$PROJECT_DIR$/css/style.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/ThermoInterface.js" afterPath="$PROJECT_DIR$/js/ThermoInterface.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/js/config.js" afterPath="$PROJECT_DIR$/js/config.js" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -47,8 +34,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="91">
-              <caret line="88" column="11" lean-forward="false" selection-start-line="88" selection-start-column="11" selection-end-line="88" selection-end-column="11" />
+            <state relative-caret-position="459">
+              <caret line="153" column="88" lean-forward="false" selection-start-line="153" selection-start-column="88" selection-end-line="153" selection-end-column="88" />
               <folding />
             </state>
           </provider>
@@ -67,7 +54,7 @@
       <file leaf-file-name="ThermoInterface.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/ThermoInterface.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2310">
+            <state relative-caret-position="1202">
               <caret line="154" column="36" lean-forward="false" selection-start-line="154" selection-start-column="36" selection-end-line="154" selection-end-column="36" />
               <folding />
             </state>
@@ -87,8 +74,8 @@
       <file leaf-file-name="style.css" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/css/style.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="15" column="1" lean-forward="false" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+            <state relative-caret-position="30">
+              <caret line="2" column="17" lean-forward="false" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
               <folding />
             </state>
           </provider>
@@ -246,12 +233,12 @@
       <workItem from="1509891928904" duration="35891000" />
       <workItem from="1510239675840" duration="1189000" />
       <workItem from="1510501019957" duration="2000" />
-      <workItem from="1510501866775" duration="8509000" />
+      <workItem from="1510501866775" duration="12433000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="45889000" />
+    <option name="totallyTimeSpent" value="49813000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -481,14 +468,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/js/ThermoInterface.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2310">
-          <caret line="154" column="36" lean-forward="false" selection-start-line="154" selection-start-column="36" selection-end-line="154" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="uml://JavaScript-modules-diagram//Users/giuliozausa/programming/termostato/web">
       <provider selected="true" editor-type-id="UmlEditorProvider">
         <state>
@@ -524,18 +503,26 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/js/ThermoInterface.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1202">
+          <caret line="154" column="36" lean-forward="false" selection-start-line="154" selection-start-column="36" selection-end-line="154" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/css/style.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="1" lean-forward="false" selection-start-line="15" selection-start-column="1" selection-end-line="15" selection-end-column="1" />
+        <state relative-caret-position="30">
+          <caret line="2" column="17" lean-forward="false" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="91">
-          <caret line="88" column="11" lean-forward="false" selection-start-line="88" selection-start-column="11" selection-end-line="88" selection-end-column="11" />
+        <state relative-caret-position="459">
+          <caret line="153" column="88" lean-forward="false" selection-start-line="153" selection-start-column="88" selection-end-line="153" selection-end-column="88" />
           <folding />
         </state>
       </provider>
