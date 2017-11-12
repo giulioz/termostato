@@ -11,11 +11,9 @@ POST /login_mode {mode} // true, false
 
 ## Auto or Manual mode
 GET /switching_mode {}
-POST /switching_mode {mode} // on, off, auto_days, auto_temp
-GET /auto_days_prog {}
-POST /auto_days_prog {prog}
-GET /auto_temp {}
-POST /auto_temp {temp}
+POST /switching_mode {mode} // on, off, auto
+GET /auto_prog {}
+POST /auto_prog {prog}
 
 ## Diagnostics
 GET /temp {}

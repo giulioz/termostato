@@ -1,6 +1,52 @@
 <!DOCTYPE html>
 <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
+<link rel="stylesheet" href="css/semantic.min.css">
+<link rel="stylesheet" href="css/style.css">
+
+<div class="ui text container">
+    <h1>
+        <i class="fire icon"></i>
+        <span id="headerHeading"></span>
+        <div class="ui rightfloat label">
+            <i class="thermometer three quarters icon"></i> <span id="tempPrint"></span>
+        </div>
+    </h1>
+
+    <h3>Programmazione termostato</h3>
+
+    <section>
+        <span class="h1">Programmazione attuale:</span>
+    </section>
+</div>
+
+<script>var locales = {};</script>
+<script src="js/locale.it.js"></script>
+<script src="js/config.js"></script>
+<script src="js/ThermoInterface.js"></script>
+<script src="js/jquery.min.js"></script>
+<script src="js/semantic.min.js"></script>
 <script>
+
+    // Check if login is needed
+    ThermoInterface.get_login_mode().catch(function (error) {
+        if (error.message === locale.error_noLogin) {
+            location.href = "login.html";
+        }
+    });
+
+    // Fill page title
+    ThermoInterface.get_identifier().then(function (identifier) {
+        document.title = identifier;
+        $("#headerHeading").text(identifier);
+    });
+
+    // Print room temp
+    // TODO: make it dynamic
+    ThermoInterface.temp().then(function (temp) {
+        $("#tempPrint").text(temp);
+    });
 
 </script>
