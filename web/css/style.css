@@ -6,3 +6,11 @@
     float: right;
     vertical-align: middle;
 }
+
+.leftmargin {
+    margin-left: 20px;
+}
+
+.hidden {
+    visibility: hidden;
+}

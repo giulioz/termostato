@@ -3,22 +3,33 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 
-<link rel="stylesheet" href="css/semantic.min.css">
+<link rel="stylesheet" href="css/font-awesome.min.css">
+<link rel="stylesheet" href="css/bootstrap-reboot.min.css">
+<link rel="stylesheet" href="css/bootstrap.min.css">
+<link rel="stylesheet" href="css/bootstrap-grid.min.css">
+<link rel="stylesheet" href="css/bootstrap-toggle.min.css">
 <link rel="stylesheet" href="css/style.css">
 
-<div class="ui text container">
+<div class="container">
     <h1>
-        <i class="fire icon"></i>
+        <i class="fa fa-fire"></i>
         <span id="headerHeading"></span>
-        <div class="ui rightfloat label">
-            <i class="thermometer three quarters icon"></i> <span id="tempPrint"></span>
-        </div>
+        <span class="badge badge-secondary leftmargin">
+            <small><i class="fa fa-thermometer"></i> <span id="tempPrint"></span></small>
+        </span>
     </h1>
 
     <h3>Programmazione termostato</h3>
 
-    <section>
-        <span class="h1">Programmazione attuale:</span>
+    <div class="btn-group" id="modeSelector">
+        <button type="button" class="btn btn-secondary" id="on">Acceso</button>
+        <button type="button" class="btn btn-secondary" id="off">Spento</button>
+    </div>
+
+    <input type="checkbox" data-toggle="toggle" id="autoCheckbox" data-on="Automatico" data-off="Manuale">
+
+    <section id="auto">
+        WIP
     </section>
 </div>
 
@@ -27,8 +38,11 @@
 <script src="js/config.js"></script>
 <script src="js/ThermoInterface.js"></script>
 <script src="js/jquery.min.js"></script>
-<script src="js/semantic.min.js"></script>
+<script src="js/bootstrap.bundle.min.js"></script>
+<script src="js/bootstrap-toggle.min.js"></script>
 <script>
+
+    var autoMode;
 
     // Check if login is needed
     ThermoInterface.get_login_mode().catch(function (error) {
@@ -37,16 +51,102 @@
         }
     });
 
-    // Fill page title
-    ThermoInterface.get_identifier().then(function (identifier) {
-        document.title = identifier;
-        $("#headerHeading").text(identifier);
-    });
+    $(document).ready(function() {
 
-    // Print room temp
-    // TODO: make it dynamic
-    ThermoInterface.temp().then(function (temp) {
-        $("#tempPrint").text(temp);
+        // Fill page title
+        ThermoInterface.get_identifier().then(function (identifier) {
+            document.title = identifier;
+            $("#headerHeading").text(identifier);
+        });
+
+        // Print room temp
+        // TODO: make it dynamic
+        ThermoInterface.temp().then(function (temp) {
+            $("#tempPrint").text(temp);
+        });
+
+        $("#autoCheckbox").change(function () {
+            if(this.checked) {
+                ThermoInterface.post_switching_mode("auto").then(function () {
+                    $("#on").addClass("disabled");
+                    $("#off").addClass("disabled");
+                    $("#auto").removeClass("hidden");
+                    autoMode = true;
+                });
+            } else {
+                ThermoInterface.post_switching_mode("off").then(function () {
+                    $("#on").removeClass("disabled");
+                    $("#off").removeClass("disabled");
+                    $("#auto").addClass("hidden");
+                    $("#off").addClass("green");
+                    $("#on").removeClass("green");
+                    autoMode = false;
+                });
+            }
+        }).bootstrapToggle({
+            on: 'Automatico',
+            off: 'Manuale'
+        });
+
+        // Select current mode
+        ThermoInterface.get_switching_mode().then(function (mode) {
+            if (mode === "off" || mode === "on") {
+                if (mode === "on") {
+                    $("#on").addClass("btn-primary");
+                    $("#off").removeClass("btn-primary");
+                    $("#off").addClass("btn-secondary");
+                    $("#on").removeClass("btn-secondary");
+                } else {
+                    $("#off").addClass("btn-primary");
+                    $("#on").removeClass("btn-primary");
+                    $("#on").addClass("btn-secondary");
+                    $("#off").removeClass("btn-secondary");
+                }
+                $("#auto").addClass("hidden");
+                $("#on").removeClass("disabled");
+                $("#off").removeClass("disabled");
+
+                autoMode = false;
+                $("#autoCheckbox").bootstrapToggle('on');
+            } else {
+                $("#on").addClass("disabled");
+                $("#off").addClass("disabled");
+                if (mode === "auto_off") {
+                    $("#off").addClass("btn-primary");
+                    $("#on").removeClass("btn-primary");
+                    $("#on").addClass("btn-secondary");
+                    $("#off").removeClass("btn-secondary");
+                } else {
+                    $("#on").addClass("btn-primary");
+                    $("#off").removeClass("btn-primary");
+                    $("#off").addClass("btn-secondary");
+                    $("#on").removeClass("btn-secondary");
+                }
+                $("#auto").removeClass("hidden");
+
+                $("#autoCheckbox").bootstrapToggle('off');
+                autoMode = true;
+            }
+        });
+
+
+        $("#on").click(function () {
+            if (!autoMode) {
+                ThermoInterface.post_switching_mode("on").then(function () {
+                    $("#on").addClass("green");
+                    $("#off").removeClass("green");
+                });
+            }
+        });
+
+        $("#off").click(function () {
+            if (!autoMode) {
+                ThermoInterface.post_switching_mode("off").then(function () {
+                    $("#off").addClass("green");
+                    $("#on").removeClass("green");
+                });
+            }
+        });
     });
 
 </script>

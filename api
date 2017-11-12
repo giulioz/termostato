@@ -20,5 +20,5 @@ GET /temp {}
 GET /version {}
 POST /time {area}
 GET /time {}
-POST /identifier {string}
+POST /identifier {identifier}
 GET /identifier {}
