@@ -98,13 +98,13 @@ bool loadConfig() {
     }
     std::unique_ptr<char[]> buf(new char[size]);
     configFile.readBytes(buf.get(), size);
-    StaticJsonBuffer<200> jsonBuffer;
+    StaticJsonBuffer<1000> jsonBuffer;
     JsonObject& json = jsonBuffer.parseObject(buf.get());
     if (!json.success()) {
         return false;
     }
 
-    savedData.timeZone = 3600;//json["timeZone"];
+    savedData.timeZone = json["timeZone"];
     savedData.currentMode = json["currentMode"];
     savedData.identifier = json["identifier"].as<String>();
     for (int i = 0; i < 24; i++) {
