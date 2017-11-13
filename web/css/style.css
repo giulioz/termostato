@@ -12,6 +12,10 @@
     margin-left: 20px;
 }
 
+.rightmargin {
+    margin-right: 20px;
+}
+
 .hidden {
     visibility: hidden;
 }

@@ -7,11 +7,12 @@
 #include <ESP8266mDNS.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
+#include <Ticker.h>
 #include "FS.h"
 
 // CHANGE ME - costants
 const int sensorPin = D8;
-const int relayPin = D9;
+const int relayPin = D2;
 const char* fversion = "WIP 12/11/17";
 const char* ssid = "ZausaNet";
 const char* password = "clzausa58";
@@ -38,6 +39,9 @@ ESP8266WebServer server(80);
 byte packetBuffer[NTP_PACKET_SIZE];
 IPAddress timeServerIP(37,247,53,178);
 WiFiUDP udp;
+int currentTime;
+int currentState;
+Ticker checkTicker;
 
 // send an NTP request to the time server at the given address
 unsigned long sendNTPpacket(IPAddress& address) {
@@ -78,12 +82,8 @@ unsigned long getTime() {
     }
 }
 
-int getAuto() {
-    int hour = (getTime()  % 86400L) / 3600;
-    sensors.requestTemperatures();
-    float temp = sensors.getTempCByIndex(0);
-
-    return savedData.programHours[hour] > temp;
+void updateTime() {
+    currentTime = getTime();
 }
 
 bool loadConfig() {
@@ -94,14 +94,14 @@ bool loadConfig() {
 
     size_t size = configFile.size();
     if (size > 1024) {
-      return false; // File too large
+        return false; // File too large
     }
     std::unique_ptr<char[]> buf(new char[size]);
     configFile.readBytes(buf.get(), size);
     StaticJsonBuffer<200> jsonBuffer;
     JsonObject& json = jsonBuffer.parseObject(buf.get());
     if (!json.success()) {
-      return false;
+        return false;
     }
 
     savedData.timeZone = json["timeZone"];
@@ -115,13 +115,14 @@ bool loadConfig() {
 }
 
 bool saveConfig() {
-    StaticJsonBuffer<200> jsonBuffer;
+    StaticJsonBuffer<1000> jsonBuffer;
     JsonObject& json = jsonBuffer.createObject();
-    json["timeZone"] = savedData.timeZone;
+    json["timeZone"] = 3600;//savedData.timeZone;
     json["currentMode"] = savedData.currentMode;
     json["identifier"] = savedData.identifier;
+    JsonArray& progs = json.createNestedArray("programHours");
     for (int i = 0; i < 24; i++) {
-        json["programHours"][i] = savedData.programHours[i];
+        progs.add(savedData.programHours[i]);
     }
   
     File configFile = SPIFFS.open("/config.json", "w");
@@ -177,7 +178,7 @@ void setup() {
         server.send(200, "text/json", "\"" + String(fversion) + "\"");
     });
     server.on("/time", HTTP_GET, [](){
-        server.send(200, "text/json", String(getTime()));
+        server.send(200, "text/json", String(currentTime) + " " +  String(savedData.timeZone));
     });
     server.on("/time", HTTP_POST, [](){
         StaticJsonBuffer<200> newBuffer;
@@ -195,10 +196,10 @@ void setup() {
         } else if (savedData.currentMode == 0) {
             server.send(200, "text/json", "\"off\"");            
         } else {
-            if (getAuto()) {
+            if (digitalRead(relayPin)) {
                 server.send(200, "text/json", "\"auto_on\"");
             } else {
-                server.send(200, "text/json", "\"auto_on\"");
+                server.send(200, "text/json", "\"auto_off\"");
             }
         }
     });
@@ -213,7 +214,7 @@ void setup() {
             digitalWrite(relayPin, savedData.currentMode);
         } else {
             savedData.currentMode = 2;
-            digitalWrite(relayPin, savedData.currentMode);
+            // start auto
         }
         if (saveConfig()) {
             server.send(200, "text/plain", "\"ok\"");
@@ -243,14 +244,30 @@ void setup() {
             server.send(200, "text/plain", "\"error\"");
         }
     });
+    server.on("/debug", HTTP_GET, [](){
+        sensors.requestTemperatures();
+        float temp = sensors.getTempCByIndex(0);
+        int currentHour = (currentTime % 86400L) / 3600;
+        server.send(200, "text/json", String(currentHour) + " " + String(currentTime) + " "
+            + String(savedData.programHours[currentHour]) + " "
+            + String(temp) + " "
+            + String(savedData.programHours[currentHour] > temp ? 1 : 0) + " "
+            + String(savedData.currentMode) + " ");
+    });
     server.begin();
+
+    checkTicker.attach(60*5, updateTime);
 }
 
 void loop() {
     server.handleClient();
     ArduinoOTA.handle();
 
-    if (savedData.currentMode == 2) {
-        digitalWrite(relayPin, savedData.currentMode);
+    if (savedData.currentMode > 1) {
+        int hour = (currentTime % 86400L) / 3600;
+        sensors.requestTemperatures();
+        float temp = sensors.getTempCByIndex(0);
+        currentState = savedData.programHours[hour] > temp ? 1 : 0;
     }
+    digitalWrite(relayPin, savedData.currentMode < 2 ? savedData.currentMode : currentState);
 }
