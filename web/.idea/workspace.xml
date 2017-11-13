@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="e9a63a07-bfa5-4f77-a77a-d5467d53a266" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/../firmware/firmware.ino" afterPath="$PROJECT_DIR$/../firmware/firmware.ino" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/css/style.css" afterPath="$PROJECT_DIR$/css/style.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.html" afterPath="$PROJECT_DIR$/index.html" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -25,8 +23,8 @@
       <file leaf-file-name="index.html" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-16">
-              <caret line="116" column="33" lean-forward="true" selection-start-line="116" selection-start-column="33" selection-end-line="116" selection-end-column="33" />
+            <state relative-caret-position="207">
+              <caret line="20" column="9" lean-forward="false" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="9" />
               <folding />
             </state>
           </provider>
@@ -224,12 +222,12 @@
       <workItem from="1509891928904" duration="35891000" />
       <workItem from="1510239675840" duration="1189000" />
       <workItem from="1510501019957" duration="2000" />
-      <workItem from="1510501866775" duration="16326000" />
+      <workItem from="1510501866775" duration="16814000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="53706000" />
+    <option name="totallyTimeSpent" value="54194000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -530,8 +528,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-16">
-          <caret line="116" column="33" lean-forward="true" selection-start-line="116" selection-start-column="33" selection-end-line="116" selection-end-column="33" />
+        <state relative-caret-position="207">
+          <caret line="20" column="9" lean-forward="false" selection-start-line="20" selection-start-column="9" selection-end-line="20" selection-end-column="9" />
           <folding />
         </state>
       </provider>

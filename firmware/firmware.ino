@@ -104,7 +104,7 @@ bool loadConfig() {
         return false;
     }
 
-    savedData.timeZone = json["timeZone"];
+    savedData.timeZone = 3600;//json["timeZone"];
     savedData.currentMode = json["currentMode"];
     savedData.identifier = json["identifier"].as<String>();
     for (int i = 0; i < 24; i++) {
@@ -117,7 +117,7 @@ bool loadConfig() {
 bool saveConfig() {
     StaticJsonBuffer<1000> jsonBuffer;
     JsonObject& json = jsonBuffer.createObject();
-    json["timeZone"] = 3600;//savedData.timeZone;
+    json["timeZone"] = savedData.timeZone;
     json["currentMode"] = savedData.currentMode;
     json["identifier"] = savedData.identifier;
     JsonArray& progs = json.createNestedArray("programHours");
@@ -256,7 +256,7 @@ void setup() {
     });
     server.begin();
 
-    checkTicker.attach(60*5, updateTime);
+    checkTicker.attach(60*1, updateTime);
 }
 
 void loop() {

@@ -20,8 +20,6 @@
         </span>
     </h1>
 
-    <h3>Programmazione termostato</h3>
-
     <div class="btn-group" id="modeSelector">
         <button type="button" class="btn btn-secondary" id="on">Acceso</button>
         <button type="button" class="btn btn-secondary" id="off">Spento</button>
@@ -29,20 +27,35 @@
 
     <input type="checkbox" data-toggle="toggle" id="autoCheckbox" data-on="Automatico" data-off="Manuale">
 
-    <section id="auto">
-        <table class="table table-striped">
-            <thead class="thead-light">
+    <div class="row" id="auto">
+        <div class="col">
+            <table class="table table-striped table-sm">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Ora</th>
+                        <th scope="col">Temperatura</th>
+                    </tr>
+                </thead>
+                <tbody id="auto-table1">
+
+                </tbody>
+            </table>
+        </div>
+        <div class="col">
+            <table class="table table-striped table-sm">
+                <thead class="thead-light">
                 <tr>
                     <th scope="col">Ora</th>
                     <th scope="col">Temperatura</th>
                 </tr>
-            </thead>
-            <tbody id="auto-table">
+                </thead>
+                <tbody id="auto-table2">
 
-            </tbody>
-        </table>
-        <button type="button" class="btn btn-primary" id="sendTable">Invia</button>
-    </section>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <button type="button" class="btn btn-primary btn-block" id="sendTable">Invia</button>
 </div>
 
 <script>var locales = {};</script>
@@ -117,8 +130,19 @@
             }).then(function () {
                 // Populate auto table
                 ThermoInterface.get_auto_prog().then(function (data) {
-                    for (var i = 0; i < 24; i++) {
-                        document.getElementById("auto-table").innerHTML +=
+                    for (var i = 0; i < 12; i++) {
+                        document.getElementById("auto-table1").innerHTML +=
+                            "<tr>" +
+                            "<th scope=\"row\">" + i + ":00</th>" +
+                            "<td>" +
+                            "<input class='rightmargin' value='" + data[i] + "' id='C" + i + "' type=\"number\" step=\"0.5\">" +
+                            "<input id=\"Cs" + i + "\" data-slider-id='Cs" + i + "Slider' type=\"text\" data-slider-min=\"10\" data-slider-max=\"30\" data-slider-step=\"1\" data-slider-value=\"" + data[i] + "\"/>" +
+                            "</td>" +
+                            "</tr>";
+                        $('#Cs' + i).slider();
+                    }
+                    for (var i = 12; i < 24; i++) {
+                        document.getElementById("auto-table2").innerHTML +=
                             "<tr>" +
                             "<th scope=\"row\">" + i + ":00</th>" +
                             "<td>" +
