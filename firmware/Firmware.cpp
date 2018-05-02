@@ -3,6 +3,7 @@
 #define DEBUG
 
 const char* configPath = "/config";
+const char* fwversion = "2.0";
 
 // Constructor
 Firmware::Firmware() :
@@ -17,6 +18,7 @@ Firmware::Firmware() :
     scheduler.AddThread(static_cast<Updateable*>(&thermostat));
 }
 
+//questo è un easter egg di camoli filippo
 // Destructor
 Firmware::~Firmware() {
 }
@@ -90,11 +92,11 @@ void Firmware::InitWebServer() {
     // POST /thermostat/program
     webServer.on("/thermostat/program", HTTP_POST, [this](){
         StaticJsonBuffer<JSON_ARRAY_SIZE(24)> jsonBuffer;
-        JsonArray& data = jsonBuffer.parseArray(server.arg("plain"));
+        JsonArray& data = jsonBuffer.parseArray(webServer.arg("plain"));
         if (data.size() != 24) {
             webServer.send(400); // bad request
         } else {
-            for (auto i = 0; i < data.size(); i++) {
+            for (unsigned int i = 0; i < data.size(); i++) {
                 config.targetTemps[i] = data[i];
             }
             if (config.Save(configPath, FileIO::GetDefault())) {
@@ -116,12 +118,65 @@ void Firmware::InitWebServer() {
     });
 
     // GET /stats/timezone
-    webServer.on("/stats/time", HTTP_GET, [this](){
+    webServer.on("/stats/timezone", HTTP_GET, [this](){
         webServer.send(200, "text/json", String(config.timeZone));
     });
     // POST /stats/timezone
-    webServer.on("/stats/time", HTTP_POST, [this](){
+    webServer.on("/stats/timezone", HTTP_POST, [this](){
+        if (isDigit(webServer.arg("plain")) {
+            config.timeZone = toInt(webServer.arg("plain"));
+            if (config.Save(configPath, FileIO::GetDefault())) {
+                webServer.send(200);
+            } else {
+                webServer.send(500); // error
+            }
+        } else {
+            webServer.send(400); // bad request
+        }
+    });
+
+    // GET /stats/timezone
+    webServer.on("/stats/timezone", HTTP_GET, [this](){
         webServer.send(200, "text/json", String(config.timeZone));
+    });
+    // POST /stats/timezone
+    webServer.on("/stats/timezone", HTTP_POST, [this](){
+        if (isDigit(webServer.arg("plain")) {
+            config.timeZone = toInt(webServer.arg("plain"));
+            if (config.Save(configPath, FileIO::GetDefault())) {
+                webServer.send(200);
+            } else {
+                webServer.send(500); // error
+            }
+        } else {
+            webServer.send(400); // bad request
+        }
+    });
+
+    // GET /identifier
+    webServer.on("/identifier", HTTP_GET, [this](){
+        webServer.send(200, "text/json", String(config.identifier));
+    });
+    // POST /identifier
+    webServer.on("/identifier", HTTP_POST, [this](){
+        if (webServer.arg("plain").substring(1, 50)) {
+            auto str = webServer.arg("plain");
+            for (auto i = 0; i < str.length() - 1 && i < 50; i++) {
+                config.identifier[i] = str.charAt(i + 1);
+            }
+            if (config.Save(configPath, FileIO::GetDefault())) {
+                webServer.send(200);
+            } else {
+                webServer.send(500); // error
+            }
+        } else {
+            webServer.send(400); // bad request
+        }
+    });
+
+    // GET /fwversion
+    webServer.on("/fwversion", HTTP_GET, [this](){
+        webServer.send(200, "text/json", String(fwversion));
     });
 
     // GET /settings

@@ -7,7 +7,9 @@
 - `/stats/timezone` (GET / POST): time shift in hours
 - `/identifier` (GET / POST): 50 characters
 - `/fwversion` (GET)
-- `/settings` (GET): dump settings
+- `/settings` (GET): dump settings in base64
 
 ## Errors
 - `403` invalid token
+- `500` error (mostly during settings save)
+- `400` invalid request
