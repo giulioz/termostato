@@ -55,7 +55,7 @@ void Firmware::InitWebServer() {
     });
     // POST /thermostat/mode
     webServer.on("/thermostat/mode", HTTP_POST, [this](){
-        bool ok = false;
+        auto ok = false;
         if (webServer.arg("plain").equals("\"on\"")) {
             config.manualOnOff = true;
             ok = true;
@@ -67,10 +67,12 @@ void Firmware::InitWebServer() {
             ok = true;
         }
 
-        if (ok && config.Save(configPath, FileIO::GetDefault())) {
+        if (!ok) {
+            webServer.send(400); // bad request
+        } else if (config.Save(configPath, FileIO::GetDefault())) {
             webServer.send(200);
         } else {
-            webServer.send(500);
+            webServer.send(500); // error
         }
     });
 
@@ -85,14 +87,41 @@ void Firmware::InitWebServer() {
         data.printTo(jsonRes);
         webServer.send(200, "text/json", jsonRes);
     });
+    // POST /thermostat/program
+    webServer.on("/thermostat/program", HTTP_POST, [this](){
+        StaticJsonBuffer<JSON_ARRAY_SIZE(24)> jsonBuffer;
+        JsonArray& data = jsonBuffer.parseArray(server.arg("plain"));
+        if (data.size() != 24) {
+            webServer.send(400); // bad request
+        } else {
+            for (auto i = 0; i < data.size(); i++) {
+                config.targetTemps[i] = data[i];
+            }
+            if (config.Save(configPath, FileIO::GetDefault())) {
+                webServer.send(200);
+            } else {
+                webServer.send(500); // error
+            }
+        }
+    });
 
     // GET /stats/temperature
     webServer.on("/stats/temperature", HTTP_GET, [this](){
         webServer.send(200, "text/json", String(tempSensor.GetCurrentTemp()));
     });
+
     // GET /stats/time
     webServer.on("/stats/time", HTTP_GET, [this](){
         webServer.send(200, "text/json", String(NTPTimeProvider::GetDefault()->GetHour()));
+    });
+
+    // GET /stats/timezone
+    webServer.on("/stats/time", HTTP_GET, [this](){
+        webServer.send(200, "text/json", String(config.timeZone));
+    });
+    // POST /stats/timezone
+    webServer.on("/stats/time", HTTP_POST, [this](){
+        webServer.send(200, "text/json", String(config.timeZone));
     });
 
     // GET /settings
