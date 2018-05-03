@@ -29,8 +29,8 @@ void Thermostat::Update() {
         this->currentState = this->config->manualOnOff;
     }
 
-    // digitalWrite(controlPin, currentState);
-    digitalWrite(controlPin, 0);
+    digitalWrite(controlPin, currentState);
+    // digitalWrite(controlPin, 0);
 }
 
 bool Thermostat::GetCurrentState() {
