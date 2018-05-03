@@ -77,7 +77,7 @@ var ThermoInterface = {
         return fetch(config.url + "/identifier", {
             method: 'post',
             headers: this.headers,
-            body: JSON.stringify({identifier: identifier})
+            body: "\"" +  identifier + "\""
         }).then(this.handleHttpError);
     },
 
