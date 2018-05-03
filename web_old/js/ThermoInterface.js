@@ -2,62 +2,8 @@ var ThermoInterface = {
 
     headers: {
         "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "Authorization": "Basic YWRtaW46YWRtaW4="
     },
-    
-    // =============================================
-    // Session Functions
-    // =============================================
-
-    // POST /login {password}   ->  if ok then {session_id} else HTTP 401
-    login: function (password) {
-        return fetch(config.url + "/login", {
-            method: 'post',
-            //credentials: 'include', mode: 'cors',
-            headers: this.headers,
-            body: JSON.stringify(password)
-        }).then(this.handleHttpError).then(function (data) {
-            document.cookie = data.session_id;
-        });
-    },
-
-    // POST /logout {}
-    logout: function () {
-        return fetch(config.url + "/logout", {
-            method: 'post',
-            //credentials: 'include', mode: 'cors',
-            headers: this.headers
-        }).then(this.handleHttpError);
-    },
-
-    // POST /set_password {password}
-    set_password: function (password) {
-        return fetch(config.url + "/set_password", {
-            method: 'post',
-            //credentials: 'include', mode: 'cors',
-            headers: this.headers,
-            body: JSON.stringify(password)
-        }).then(this.handleHttpError);
-    },
-
-    // GET /login_mode {}
-    get_login_mode: function () {
-        return fetch(config.url + "/login_mode", {
-            method: 'get',
-            //credentials: 'include', mode: 'cors',
-            headers: this.headers
-        }).then(this.handleHttpError);
-    },
-
-    // POST /login_mode {mode}
-    post_login_mode: function (mode) {
-        return fetch(config.url + "/login_mode", {
-            method: 'post',
-            //credentials: 'include', mode: 'cors',
-            headers: this.headers,
-            body: JSON.stringify(mode)
-        }).then(this.handleHttpError);
-    },
-
 
     // =============================================
     // Switching Mode
@@ -65,18 +11,16 @@ var ThermoInterface = {
 
     // GET /switching_mode {}
     get_switching_mode: function () {
-        return fetch(config.url + "/switching_mode", {
+        return fetch(config.url + "/thermostat/mode", {
             method: 'get',
-            //credentials: 'include', mode: 'cors',
             headers: this.headers
         }).then(this.handleHttpError);
     },
 
     // POST /switching_mode {mode}
     post_switching_mode: function (mode) {
-        return fetch(config.url + "/switching_mode", {
+        return fetch(config.url + "/thermostat/mode", {
             method: 'post',
-            //credentials: 'include', mode: 'cors',
             headers: this.headers,
             body: JSON.stringify({mode: mode})
         }).then(this.handleHttpError);
@@ -84,18 +28,16 @@ var ThermoInterface = {
 
     // GET /auto_prog {}
     get_auto_prog: function () {
-        return fetch(config.url + "/auto_prog", {
+        return fetch(config.url + "/thermostat/program", {
             method: 'get',
-            //credentials: 'include', mode: 'cors',
             headers: this.headers
         }).then(this.handleHttpError);
     },
 
     // POST /auto_prog {prog}
     post_auto_prog: function (prog) {
-        return fetch(config.url + "/auto_prog", {
+        return fetch(config.url + "/thermostat/program", {
             method: 'post',
-            //credentials: 'include', mode: 'cors',
             headers: this.headers,
             body: JSON.stringify(prog)
         }).then(this.handleHttpError);
@@ -108,38 +50,17 @@ var ThermoInterface = {
 
     // GET /temp {}
     temp: function () {
-        return fetch(config.url + "/temp", {
+        return fetch(config.url + "/stats/temperature", {
             method: 'get',
-            //credentials: 'include', mode: 'cors',
-            headers: this.headers
-        }).then(this.handleHttpError);
-    },
-
-    // GET /version {}
-    version: function () {
-        return fetch(config.url + "/version", {
-            method: 'get',
-            //credentials: 'include', mode: 'cors',
             headers: this.headers
         }).then(this.handleHttpError);
     },
 
     // GET /time {}
     get_time: function () {
-        return fetch(config.url + "/time", {
+        return fetch(config.url + "/stats/time", {
             method: 'get',
-            //credentials: 'include', mode: 'cors',
             headers: this.headers
-        }).then(this.handleHttpError);
-    },
-
-    // POST /time {shift}
-    post_time: function (shift) {
-        return fetch(config.url + "/time", {
-            method: 'post',
-            //credentials: 'include', mode: 'cors',
-            headers: this.headers,
-            body: JSON.stringify({shift: shift})
         }).then(this.handleHttpError);
     },
 
@@ -147,7 +68,6 @@ var ThermoInterface = {
     get_identifier: function () {
         return fetch(config.url + "/identifier", {
             method: 'get',
-            //credentials: 'include', mode: 'cors',
             headers: this.headers
         }).then(this.handleHttpError);
     },
@@ -156,7 +76,6 @@ var ThermoInterface = {
     post_identifier: function (identifier) {
         return fetch(config.url + "/identifier", {
             method: 'post',
-            //credentials: 'include', mode: 'cors',
             headers: this.headers,
             body: JSON.stringify({identifier: identifier})
         }).then(this.handleHttpError);

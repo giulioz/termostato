@@ -1,9 +1,15 @@
 #include "Firmware.hpp"
 
+// Remove to disable serial debug
 #define DEBUG
 
+// HardCoded constants
 const char* configPath = "/config";
 const char* fwversion = "2.0";
+const char* username = "admin";
+const char* password = "admin";
+const int port = 80;
+
 
 // Constructor
 Firmware::Firmware() :
@@ -11,14 +17,13 @@ Firmware::Firmware() :
     scheduler(),
     tempSensor(config.sensorPin, config.sensorResolution),
     thermostat(config.relayPin, &tempSensor, static_cast<TimeProvider*>(NTPTimeProvider::GetDefault()), &config),
-    webServer(80) {
+    webServer(port) {
 
     // Spawn threads
     scheduler.AddThread(static_cast<Updateable*>(&tempSensor));
     scheduler.AddThread(static_cast<Updateable*>(&thermostat));
 }
 
-//questo è un easter egg di camoli filippo
 // Destructor
 Firmware::~Firmware() {
 }
@@ -29,19 +34,23 @@ void Firmware::InitNetwork(const char* ssid, const char* password,
     WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
     WiFi.config(server_ip, gateway_ip, subnet_mask, dns_ip);
+    
     #ifdef DEBUG
     Serial.print("\n\nTrying to connect to ");
     Serial.println(ssid);
     #endif
+
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);
     }
+    
     #ifdef DEBUG
     Serial.print("Connected to ");
     Serial.println(ssid);
     Serial.print("IP address: ");
     Serial.println(WiFi.localIP());
     #endif
+    
     ArduinoOTA.begin();
 }
 
@@ -49,6 +58,8 @@ void Firmware::InitNetwork(const char* ssid, const char* password,
 void Firmware::InitWebServer() {
     // GET /thermostat/mode
     webServer.on("/thermostat/mode", HTTP_GET, [this](){
+        if(!webServer.authenticate(username, password))
+            return webServer.requestAuthentication();
         if (config.autoMode) {
             webServer.send(200, "text/json", "\"auto\"");
         } else {
@@ -57,12 +68,16 @@ void Firmware::InitWebServer() {
     });
     // POST /thermostat/mode
     webServer.on("/thermostat/mode", HTTP_POST, [this](){
+        if(!webServer.authenticate(username, password))
+            return webServer.requestAuthentication();
         auto ok = false;
         if (webServer.arg("plain").equals("\"on\"")) {
             config.manualOnOff = true;
+            config.autoMode = false;
             ok = true;
         } else if (webServer.arg("plain").equals("\"off\"")) {
             config.manualOnOff = false;
+            config.autoMode = false;
             ok = true;
         } else if (webServer.arg("plain").equals("\"auto\"")) {
             config.autoMode = true;
@@ -80,6 +95,8 @@ void Firmware::InitWebServer() {
 
     // GET /thermostat/program
     webServer.on("/thermostat/program", HTTP_GET, [this](){
+        if(!webServer.authenticate(username, password))
+            return webServer.requestAuthentication();
         StaticJsonBuffer<JSON_ARRAY_SIZE(24)> jsonBuffer;
         JsonArray& data = jsonBuffer.createArray();
         for (const auto& val : config.targetTemps) {
@@ -91,7 +108,9 @@ void Firmware::InitWebServer() {
     });
     // POST /thermostat/program
     webServer.on("/thermostat/program", HTTP_POST, [this](){
-        StaticJsonBuffer<JSON_ARRAY_SIZE(24)> jsonBuffer;
+        if(!webServer.authenticate(username, password))
+            return webServer.requestAuthentication();
+        StaticJsonBuffer<JSON_ARRAY_SIZE(24*4)> jsonBuffer;
         JsonArray& data = jsonBuffer.parseArray(webServer.arg("plain"));
         if (data.size() != 24) {
             webServer.send(400); // bad request
@@ -109,60 +128,54 @@ void Firmware::InitWebServer() {
 
     // GET /stats/temperature
     webServer.on("/stats/temperature", HTTP_GET, [this](){
+        if(!webServer.authenticate(username, password))
+            return webServer.requestAuthentication();
         webServer.send(200, "text/json", String(tempSensor.GetCurrentTemp()));
     });
 
     // GET /stats/time
     webServer.on("/stats/time", HTTP_GET, [this](){
+        if(!webServer.authenticate(username, password))
+            return webServer.requestAuthentication();
         webServer.send(200, "text/json", String(NTPTimeProvider::GetDefault()->GetHour()));
     });
 
     // GET /stats/timezone
     webServer.on("/stats/timezone", HTTP_GET, [this](){
+        if(!webServer.authenticate(username, password))
+            return webServer.requestAuthentication();
         webServer.send(200, "text/json", String(config.timeZone));
     });
     // POST /stats/timezone
     webServer.on("/stats/timezone", HTTP_POST, [this](){
-        if (isDigit(webServer.arg("plain")) {
-            config.timeZone = toInt(webServer.arg("plain"));
-            if (config.Save(configPath, FileIO::GetDefault())) {
-                webServer.send(200);
-            } else {
-                webServer.send(500); // error
-            }
+        if(!webServer.authenticate(username, password))
+            return webServer.requestAuthentication();
+        config.timeZone = webServer.arg("plain").toInt();
+        NTPTimeProvider::GetDefault()->Config(config.timeZone, 60);
+        if (config.Save(configPath, FileIO::GetDefault())) {
+            webServer.send(200);
         } else {
-            webServer.send(400); // bad request
-        }
-    });
-
-    // GET /stats/timezone
-    webServer.on("/stats/timezone", HTTP_GET, [this](){
-        webServer.send(200, "text/json", String(config.timeZone));
-    });
-    // POST /stats/timezone
-    webServer.on("/stats/timezone", HTTP_POST, [this](){
-        if (isDigit(webServer.arg("plain")) {
-            config.timeZone = toInt(webServer.arg("plain"));
-            if (config.Save(configPath, FileIO::GetDefault())) {
-                webServer.send(200);
-            } else {
-                webServer.send(500); // error
-            }
-        } else {
-            webServer.send(400); // bad request
+            webServer.send(500); // error
         }
     });
 
     // GET /identifier
     webServer.on("/identifier", HTTP_GET, [this](){
-        webServer.send(200, "text/json", String(config.identifier));
+        if(!webServer.authenticate(username, password))
+            return webServer.requestAuthentication();
+        webServer.send(200, "text/json", "\"" + String(config.identifier) + "\"");
     });
     // POST /identifier
     webServer.on("/identifier", HTTP_POST, [this](){
-        if (webServer.arg("plain").substring(1, 50)) {
+        if(!webServer.authenticate(username, password))
+            return webServer.requestAuthentication();
+        if (webServer.arg("plain").length() > 4) {
             auto str = webServer.arg("plain");
-            for (auto i = 0; i < str.length() - 1 && i < 50; i++) {
-                config.identifier[i] = str.charAt(i + 1);
+            for (auto i = 0; i < 50; i++) {
+                config.identifier[i] = 0;
+            }
+            for (auto i = 1; str.charAt(i) != '\"' &&  i < str.length() - 1 && i < 50; i++) {
+                config.identifier[i - 1] = str.charAt(i);
             }
             if (config.Save(configPath, FileIO::GetDefault())) {
                 webServer.send(200);
@@ -176,15 +189,26 @@ void Firmware::InitWebServer() {
 
     // GET /fwversion
     webServer.on("/fwversion", HTTP_GET, [this](){
+        if(!webServer.authenticate(username, password))
+            return webServer.requestAuthentication();
         webServer.send(200, "text/json", String(fwversion));
     });
 
     // GET /settings
+    #ifdef DEBUG
     webServer.on("/settings", HTTP_GET, [this](){
-        char out[sizeof(Config)] = "error";
-        Base64::Encode(reinterpret_cast<char*>(&config), sizeof(Config), out, sizeof(Config));
+        if(!webServer.authenticate(username, password))
+            return webServer.requestAuthentication();
+        char out[sizeof(Config) * 2 + 1];
+        const char kHexAlphabet[] = "0123456789ABCDEF";
+        for (auto i = 0; i < sizeof(Config) * 2; i += 2) {
+            out[i] = kHexAlphabet[reinterpret_cast<char*>(&config)[i / 2] & 0xF];
+            out[i + 1] = kHexAlphabet[(reinterpret_cast<char*>(&config)[i / 2] & 0xF0) >> 4];
+        }
+        out[sizeof(Config) * 2] = 0;
         webServer.send(200, "text/json", out);
     });
+    #endif
 
     webServer.begin();
 }

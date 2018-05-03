@@ -10,6 +10,6 @@
 - `/settings` (GET): dump settings in base64
 
 ## Errors
-- `403` invalid token
+- `401` invalid auth
 - `500` error (mostly during settings save)
 - `400` invalid request

@@ -74,132 +74,124 @@
 <script>
 
     var autoMode;
-
-    // Check if login is needed
-    ThermoInterface.get_login_mode().catch(function (error) {
-        if (error.message === locale.error_noLogin) {
-            location.href = "login.html";
-        }
-    }).then(function () {
-        $(document).ready(function () {
-            // Select current mode
-            ThermoInterface.get_switching_mode().then(function (mode) {
-                if (mode === "off" || mode === "on") {
-                    if (mode === "on") {
-                        $("#on").addClass("btn-primary").removeClass("btn-secondary");
-                        $("#off").removeClass("btn-primary").addClass("btn-secondary");
-                    } else {
-                        $("#off").addClass("btn-primary").removeClass("btn-secondary");
-                        $("#on").removeClass("btn-primary").addClass("btn-secondary");
-                    }
-                    $("#auto").addClass("hidden");
-                    $("#on").removeClass("disabled");
-                    $("#off").removeClass("disabled");
-
-                    autoMode = false;
+    $(document).ready(function () {
+        // Select current mode
+        ThermoInterface.get_switching_mode().then(function (mode) {
+            if (mode === "off" || mode === "on") {
+                if (mode === "on") {
+                    $("#on").addClass("btn-primary").removeClass("btn-secondary");
+                    $("#off").removeClass("btn-primary").addClass("btn-secondary");
                 } else {
-                    $("#on").addClass("disabled");
-                    $("#off").addClass("disabled");
-                    if (mode === "auto_off") {
-                        $("#off").addClass("btn-primary").removeClass("btn-secondary");
-                        $("#on").removeClass("btn-primary").addClass("btn-secondary");
+                    $("#off").addClass("btn-primary").removeClass("btn-secondary");
+                    $("#on").removeClass("btn-primary").addClass("btn-secondary");
+                }
+                $("#auto").addClass("hidden");
+                $("#on").removeClass("disabled");
+                $("#off").removeClass("disabled");
+
+                autoMode = false;
+            } else {
+                $("#on").addClass("disabled");
+                $("#off").addClass("disabled");
+                if (mode === "auto_off") {
+                    $("#off").addClass("btn-primary").removeClass("btn-secondary");
+                    $("#on").removeClass("btn-primary").addClass("btn-secondary");
+                } else {
+                    $("#on").addClass("btn-primary").removeClass("btn-secondary");
+                    $("#off").removeClass("btn-primary").addClass("btn-secondary");
+                }
+                $("#auto").removeClass("hidden");
+
+                autoMode = true;
+            }
+
+            $("#autoCheckbox").bootstrapToggle(autoMode ? "on" : "off")
+                .change(function () {
+                    if (this.checked) {
+                        ThermoInterface.post_switching_mode("auto").then(function () {
+                            $("#on").addClass("disabled");
+                            $("#off").addClass("disabled");
+                            $("#auto").removeClass("hidden");
+                            autoMode = true;
+                        });
                     } else {
-                        $("#on").addClass("btn-primary").removeClass("btn-secondary");
-                        $("#off").removeClass("btn-primary").addClass("btn-secondary");
-                    }
-                    $("#auto").removeClass("hidden");
-
-                    autoMode = true;
-                }
-
-                $("#autoCheckbox").bootstrapToggle(autoMode ? "on" : "off")
-                    .change(function () {
-                        if (this.checked) {
-                            ThermoInterface.post_switching_mode("auto").then(function () {
-                                $("#on").addClass("disabled");
-                                $("#off").addClass("disabled");
-                                $("#auto").removeClass("hidden");
-                                autoMode = true;
-                            });
-                        } else {
-                            ThermoInterface.post_switching_mode("off").then(function () {
-                                $("#on").removeClass("disabled");
-                                $("#off").removeClass("disabled");
-                                $("#auto").addClass("hidden");
-                                $("#off").addClass("btn-primary").removeClass("btn-secondary");
-                                $("#on").removeClass("btn-primary").addClass("btn-secondary");
-                                autoMode = false;
-                            });
-                        }
-                    });
-            }).then(function () {
-                // Populate auto table
-                ThermoInterface.get_auto_prog().then(function (data) {
-                    for (var i = 0; i < 12; i++) {
-                        document.getElementById("auto-table1").innerHTML +=
-                            "<tr>" +
-                            "<th scope=\"row\">" + i + ":00</th>" +
-                            "<td>" +
-                            "<input class='rightmargin' value='" + data[i] + "' id='C" + i + "' type=\"number\" step=\"0.5\">" +
-                            "<input id=\"Cs" + i + "\" data-slider-id='Cs" + i + "Slider' type=\"text\" data-slider-min=\"10\" data-slider-max=\"30\" data-slider-step=\"1\" data-slider-value=\"" + data[i] + "\"/>" +
-                            "</td>" +
-                            "</tr>";
-                        $('#Cs' + i).slider();
-                    }
-                    for (var i = 12; i < 24; i++) {
-                        document.getElementById("auto-table2").innerHTML +=
-                            "<tr>" +
-                            "<th scope=\"row\">" + i + ":00</th>" +
-                            "<td>" +
-                            "<input class='rightmargin' value='" + data[i] + "' id='C" + i + "' type=\"number\" step=\"0.5\">" +
-                            "<input id=\"Cs" + i + "\" data-slider-id='Cs" + i + "Slider' type=\"text\" data-slider-min=\"10\" data-slider-max=\"30\" data-slider-step=\"1\" data-slider-value=\"" + data[i] + "\"/>" +
-                            "</td>" +
-                            "</tr>";
-                        $('#Cs' + i).slider();
+                        ThermoInterface.post_switching_mode("off").then(function () {
+                            $("#on").removeClass("disabled");
+                            $("#off").removeClass("disabled");
+                            $("#auto").addClass("hidden");
+                            $("#off").addClass("btn-primary").removeClass("btn-secondary");
+                            $("#on").removeClass("btn-primary").addClass("btn-secondary");
+                            autoMode = false;
+                        });
                     }
                 });
-            }).then(function () {
-                // Fill page title
-                ThermoInterface.get_identifier().then(function (identifier) {
-                    document.title = identifier;
-                    $("#headerHeading").text(identifier);
+        }).then(function () {
+            // Populate auto table
+            ThermoInterface.get_auto_prog().then(function (data) {
+                for (var i = 0; i < 12; i++) {
+                    document.getElementById("auto-table1").innerHTML +=
+                        "<tr>" +
+                        "<th scope=\"row\">" + i + ":00</th>" +
+                        "<td>" +
+                        "<input class='rightmargin' value='" + data[i] + "' id='C" + i + "' type=\"number\" step=\"0.5\">" +
+                        "<input id=\"Cs" + i + "\" data-slider-id='Cs" + i + "Slider' type=\"text\" data-slider-min=\"10\" data-slider-max=\"30\" data-slider-step=\"1\" data-slider-value=\"" + data[i] + "\"/>" +
+                        "</td>" +
+                        "</tr>";
+                    $('#Cs' + i).slider();
+                }
+                for (var i = 12; i < 24; i++) {
+                    document.getElementById("auto-table2").innerHTML +=
+                        "<tr>" +
+                        "<th scope=\"row\">" + i + ":00</th>" +
+                        "<td>" +
+                        "<input class='rightmargin' value='" + data[i] + "' id='C" + i + "' type=\"number\" step=\"0.5\">" +
+                        "<input id=\"Cs" + i + "\" data-slider-id='Cs" + i + "Slider' type=\"text\" data-slider-min=\"10\" data-slider-max=\"30\" data-slider-step=\"1\" data-slider-value=\"" + data[i] + "\"/>" +
+                        "</td>" +
+                        "</tr>";
+                    $('#Cs' + i).slider();
+                }
+            });
+        }).then(function () {
+            // Fill page title
+            ThermoInterface.get_identifier().then(function (identifier) {
+                document.title = identifier;
+                $("#headerHeading").text(identifier);
+            });
+        }).then(function () {
+            // Print room temp
+            // TODO: make it dynamic
+            ThermoInterface.temp().then(function (temp) {
+                $("#tempPrint").text(temp);
+            });
+        }).then(function () {
+            $(".container").removeClass("hidden");
+        });
+
+        $("#on").click(function () {
+            if (!autoMode) {
+                ThermoInterface.post_switching_mode("on").then(function () {
+                    $("#on").addClass("btn-primary").removeClass("btn-secondary");
+                    $("#off").removeClass("btn-primary").addClass("btn-secondary");
                 });
-            }).then(function () {
-                // Print room temp
-                // TODO: make it dynamic
-                ThermoInterface.temp().then(function (temp) {
-                    $("#tempPrint").text(temp);
+            }
+        });
+
+        $("#off").click(function () {
+            if (!autoMode) {
+                ThermoInterface.post_switching_mode("off").then(function () {
+                    $("#off").addClass("btn-primary").removeClass("btn-secondary");
+                    $("#on").removeClass("btn-primary").addClass("btn-secondary");
                 });
-            }).then(function () {
-                $(".container").removeClass("hidden");
-            });
+            }
+        });
 
-            $("#on").click(function () {
-                if (!autoMode) {
-                    ThermoInterface.post_switching_mode("on").then(function () {
-                        $("#on").addClass("btn-primary").removeClass("btn-secondary");
-                        $("#off").removeClass("btn-primary").addClass("btn-secondary");
-                    });
-                }
-            });
-
-            $("#off").click(function () {
-                if (!autoMode) {
-                    ThermoInterface.post_switching_mode("off").then(function () {
-                        $("#off").addClass("btn-primary").removeClass("btn-secondary");
-                        $("#on").removeClass("btn-primary").addClass("btn-secondary");
-                    });
-                }
-            });
-
-            $("#sendTable").click(function () {
-                var data = [];
-                for (var i = 0; i < 24; i++) {
-                    data.push(document.getElementById("C" + i).value);
-                }
-                ThermoInterface.post_auto_prog(data).then(function () { location.reload() });
-            });
-        })
+        $("#sendTable").click(function () {
+            var data = [];
+            for (var i = 0; i < 24; i++) {
+                data.push(document.getElementById("C" + i).value);
+            }
+            ThermoInterface.post_auto_prog(data).then(function () { location.reload() });
+        });
     });
 
 </script>
