@@ -54,16 +54,21 @@ void Firmware::InitNetwork(const char* ssid, const char* password,
     ArduinoOTA.begin();
 }
 
+// Send headers to allow CORS
+void Firmware::SendCommonHTTPHeaders() {
+    webServer.sendHeader("Access-Control-Max-Age", "10000");
+    webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
+    webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
+    webServer.sendHeader("Access-Control-Allow-Origin", "*");
+}
+
 // Web Server
 void Firmware::InitWebServer() {
     // GET /thermostat/mode
     webServer.on("/thermostat/mode", HTTP_GET, [this](){
         if(!webServer.authenticate(username, password))
             return webServer.requestAuthentication();
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         if (config.autoMode) {
             webServer.send(200, "text/json", "\"auto\"");
         } else {
@@ -74,10 +79,7 @@ void Firmware::InitWebServer() {
     webServer.on("/thermostat/mode", HTTP_POST, [this](){
         if(!webServer.authenticate(username, password))
             return webServer.requestAuthentication();
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         auto ok = false;
         if (webServer.arg("plain").equals("\"on\"")) {
             config.manualOnOff = true;
@@ -102,10 +104,7 @@ void Firmware::InitWebServer() {
     });
     // OPTIONS /thermostat/mode
     webServer.on("/thermostat/mode", HTTP_OPTIONS, [this]() {
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         webServer.send(200, "text/plain", "" );
     });
 
@@ -113,10 +112,7 @@ void Firmware::InitWebServer() {
     webServer.on("/thermostat/program", HTTP_GET, [this](){
         if(!webServer.authenticate(username, password))
             return webServer.requestAuthentication();
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         StaticJsonBuffer<JSON_ARRAY_SIZE(24)> jsonBuffer;
         JsonArray& data = jsonBuffer.createArray();
         for (const auto& val : config.targetTemps) {
@@ -130,10 +126,7 @@ void Firmware::InitWebServer() {
     webServer.on("/thermostat/program", HTTP_POST, [this](){
         if(!webServer.authenticate(username, password))
             return webServer.requestAuthentication();
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         StaticJsonBuffer<JSON_ARRAY_SIZE(24*4)> jsonBuffer;
         JsonArray& data = jsonBuffer.parseArray(webServer.arg("plain"));
         if (data.size() != 24) {
@@ -151,10 +144,7 @@ void Firmware::InitWebServer() {
     });
     // OPTIONS /thermostat/program
     webServer.on("/thermostat/program", HTTP_OPTIONS, [this]() {
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         webServer.send(200, "text/plain", "" );
     });
 
@@ -162,18 +152,12 @@ void Firmware::InitWebServer() {
     webServer.on("/stats/temperature", HTTP_GET, [this](){
         if(!webServer.authenticate(username, password))
             return webServer.requestAuthentication();
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         webServer.send(200, "text/json", String(tempSensor.GetCurrentTemp()));
     });
     // OPTIONS /stats/temperature
     webServer.on("/stats/temperature", HTTP_OPTIONS, [this]() {
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         webServer.send(200, "text/plain", "" );
     });
 
@@ -181,18 +165,12 @@ void Firmware::InitWebServer() {
     webServer.on("/stats/time", HTTP_GET, [this](){
         if(!webServer.authenticate(username, password))
             return webServer.requestAuthentication();
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         webServer.send(200, "text/json", String(NTPTimeProvider::GetDefault()->GetHour()));
     });
     // OPTIONS /stats/time
     webServer.on("/stats/time", HTTP_OPTIONS, [this]() {
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         webServer.send(200, "text/plain", "" );
     });
 
@@ -200,20 +178,14 @@ void Firmware::InitWebServer() {
     webServer.on("/stats/timezone", HTTP_GET, [this](){
         if(!webServer.authenticate(username, password))
             return webServer.requestAuthentication();
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         webServer.send(200, "text/json", String(config.timeZone));
     });
     // POST /stats/timezone
     webServer.on("/stats/timezone", HTTP_POST, [this](){
         if(!webServer.authenticate(username, password))
             return webServer.requestAuthentication();
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         config.timeZone = webServer.arg("plain").toInt();
         NTPTimeProvider::GetDefault()->Config(config.timeZone, 60);
         if (config.Save(configPath, FileIO::GetDefault())) {
@@ -224,10 +196,7 @@ void Firmware::InitWebServer() {
     });
     // OPTIONS /stats/timezone
     webServer.on("/stats/timezone", HTTP_OPTIONS, [this]() {
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         webServer.send(200, "text/plain", "" );
     });
 
@@ -235,20 +204,14 @@ void Firmware::InitWebServer() {
     webServer.on("/identifier", HTTP_GET, [this](){
         if(!webServer.authenticate(username, password))
             return webServer.requestAuthentication();
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         webServer.send(200, "text/json", "\"" + String(config.identifier) + "\"");
     });
     // POST /identifier
     webServer.on("/identifier", HTTP_POST, [this](){
         if(!webServer.authenticate(username, password))
             return webServer.requestAuthentication();
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         if (webServer.arg("plain").length() > 4) {
             auto str = webServer.arg("plain");
             for (auto i = 0; i < 50; i++) {
@@ -268,10 +231,7 @@ void Firmware::InitWebServer() {
     });
     // OPTIONS /identifier
     webServer.on("/identifier", HTTP_OPTIONS, [this]() {
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         webServer.send(200, "text/plain", "" );
     });
 
@@ -279,18 +239,12 @@ void Firmware::InitWebServer() {
     webServer.on("/fwversion", HTTP_GET, [this](){
         if(!webServer.authenticate(username, password))
             return webServer.requestAuthentication();
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         webServer.send(200, "text/json", String(fwversion));
     });
     // OPTIONS /fwversion
     webServer.on("/fwversion", HTTP_OPTIONS, [this]() {
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         webServer.send(200, "text/plain", "" );
     });
 
@@ -299,10 +253,7 @@ void Firmware::InitWebServer() {
     webServer.on("/settings", HTTP_GET, [this](){
         if(!webServer.authenticate(username, password))
             return webServer.requestAuthentication();
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         char out[sizeof(Config) * 2 + 1];
         const char kHexAlphabet[] = "0123456789ABCDEF";
         for (auto i = 0; i < sizeof(Config) * 2; i += 2) {
@@ -314,10 +265,7 @@ void Firmware::InitWebServer() {
     });
     // OPTIONS /settings
     webServer.on("/settings", HTTP_OPTIONS, [this]() {
-        webServer.sendHeader("Access-Control-Max-Age", "10000");
-        webServer.sendHeader("Access-Control-Allow-Methods", "POST,GET,OPTIONS");
-        webServer.sendHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-        webServer.sendHeader("Access-Control-Allow-Origin", "*");
+        SendCommonHTTPHeaders();
         webServer.send(200, "text/plain", "" );
     });
     #endif

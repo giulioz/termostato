@@ -29,6 +29,7 @@ private:
 
     void InitNetwork(const char* ssid, const char* password, const IPAddress server_ip, const IPAddress gateway_ip, const IPAddress subnet_mask, const IPAddress dns_ip);
     void InitWebServer();
+    void SendCommonHTTPHeaders();
 
 public:
     Firmware();
