@@ -22,7 +22,7 @@ var ThermoInterface = {
         return fetch(config.url + "/thermostat/mode", {
             method: 'post',
             headers: this.headers,
-            body: JSON.stringify({mode: mode})
+            body: "\"" + mode + "\""
         }).then(this.handleHttpError);
     },
 
