@@ -23,7 +23,7 @@ var ThermoInterface = {
             method: 'post',
             headers: this.headers,
             body: "\"" + mode + "\""
-        }).then(this.handleHttpError);
+        });
     },
 
     // GET /auto_prog {}
@@ -40,7 +40,7 @@ var ThermoInterface = {
             method: 'post',
             headers: this.headers,
             body: JSON.stringify(prog)
-        }).then(this.handleHttpError);
+        });
     },
 
 
@@ -78,16 +78,12 @@ var ThermoInterface = {
             method: 'post',
             headers: this.headers,
             body: "\"" +  identifier + "\""
-        }).then(this.handleHttpError);
+        });
     },
 
     handleHttpError: function (response) {
         if (response.status >= 200 && response.status < 300) {
-            try {
-                return response.json();
-            } catch {
-                return;
-            }
+            return response.json();
         } else if (response.status == 401) {
             return Promise.reject(new Error(locale.error_wrongPassword));
         } else if (response.status == 403) {
