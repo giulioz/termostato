@@ -1,7 +1,7 @@
 var ThermoInterface = {
 
     headers: {
-        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+        "Content-type": "text/plain",
         "Authorization": "Basic YWRtaW46YWRtaW4="
     },
 
