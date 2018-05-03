@@ -83,7 +83,11 @@ var ThermoInterface = {
 
     handleHttpError: function (response) {
         if (response.status >= 200 && response.status < 300) {
-            return response.json();
+            try {
+                return response.json();
+            } catch {
+                return;
+            }
         } else if (response.status == 401) {
             return Promise.reject(new Error(locale.error_wrongPassword));
         } else if (response.status == 403) {
