@@ -1,12 +1,5 @@
 version: "2"
 services:
-  # evohub-interface:
-  #   build: ./interface
-  #   ports:
-  #     - "3000:3000"
-  #   links:
-  #     - iot-gateway
-
   iot-gateway:
     build: ./iot-gateway
     ports:

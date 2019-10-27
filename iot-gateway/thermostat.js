@@ -1,36 +1,6 @@
 const EventEmitter = require("events");
 const devicehttp = require("./devicehttp");
 
-const defaultConfig = {
-  targetTime: 30 * 1000,
-  programming: [
-    { hour: 0, temperature: 17 },
-    { hour: 1, temperature: 17 },
-    { hour: 2, temperature: 17 },
-    { hour: 3, temperature: 17 },
-    { hour: 4, temperature: 17 },
-    { hour: 5, temperature: 22 },
-    { hour: 6, temperature: 22 },
-    { hour: 7, temperature: 22 },
-    { hour: 8, temperature: 22 },
-    { hour: 9, temperature: 22 },
-    { hour: 10, temperature: 22 },
-    { hour: 11, temperature: 22 },
-    { hour: 12, temperature: 22 },
-    { hour: 13, temperature: 22 },
-    { hour: 14, temperature: 22 },
-    { hour: 15, temperature: 22 },
-    { hour: 16, temperature: 22 },
-    { hour: 17, temperature: 22 },
-    { hour: 18, temperature: 22 },
-    { hour: 19, temperature: 22 },
-    { hour: 20, temperature: 22 },
-    { hour: 21, temperature: 22 },
-    { hour: 22, temperature: 17 },
-    { hour: 23, temperature: 17 }
-  ]
-};
-
 module.exports = class Thermostat extends EventEmitter {
   constructor(thermostatConfig = defaultConfig) {
     super();

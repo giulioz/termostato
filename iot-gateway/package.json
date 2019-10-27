@@ -5,10 +5,11 @@
   "author": "giulioz <mail.zausa.giulio@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.19.0",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
     "isomorphic-fetch": "^2.2.1",
-    "nohm": "^2.2.2"
+    "redis": "^2.8.0"
   },
   "scripts": {
     "start": "node index.js"

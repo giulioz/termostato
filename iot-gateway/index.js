@@ -1,13 +1,18 @@
 require("dotenv").config();
-
 const express = require("express");
+const bodyParser = require("body-parser");
+
 const discovery = require("./discovery");
 const devicehttp = require("./devicehttp");
 const Thermostat = require("./thermostat");
+const Database = require("./database");
 
 const port = parseInt(process.env.API_PORT) || 8080;
 const hostname = process.env.API_HOST || "0.0.0.0";
 const app = express();
+app.use(bodyParser.json());
+
+let database;
 
 const thermostat = new Thermostat();
 let currentDevice = null;
@@ -30,8 +35,23 @@ app.get("/stats/relay/current", async (req, res) => {
   }
 });
 
+app.get("/config", async (req, res) => {
+  const config = database.getConfig();
+  res.send(config);
+});
+
+app.post("/config", async (req, res) => {
+  try {
+    await database.setConfig(req.body);
+    res.status(200).send("OK");
+  } catch (e) {
+    res.status(500).send(e);
+  }
+});
+
 async function start() {
-  app.listen(port, hostname, () => console.log("HTTP API Ready"));
+  database = await Database();
+  await database.setConfig(await database.getConfig());
 
   const devices = await discovery(2000, 1);
   console.log("Found devices:", devices);
@@ -42,5 +62,7 @@ async function start() {
   }
 
   thermostat.startThermostat(currentDevice.address);
+
+  app.listen(port, hostname, () => console.log("HTTP API Ready"));
 }
 start();
