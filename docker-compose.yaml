@@ -10,7 +10,7 @@ services:
   iot-gateway:
     build: ./iot-gateway
     ports:
-      - "512:8080"
+      - "5120:8080"
     networks:
       - redis_net
     depends_on:
