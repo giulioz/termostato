@@ -1,5 +1,12 @@
 version: "2"
 services:
+  web:
+    build: ./web
+    ports:
+      - "513:3000"
+    links:
+      - iot-gateway
+
   iot-gateway:
     build: ./iot-gateway
     ports:
@@ -20,6 +27,5 @@ services:
 
 volumes:
   redis_data: {}
-
 networks:
   redis_net:

@@ -1,0 +1,23 @@
+{
+  "name": "web",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "luxon": "^1.19.3",
+    "next": "^9.0.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
+  },
+  "scripts": {
+    "dev": "next",
+    "build": "next build",
+    "start": "next start"
+  },
+  "devDependencies": {
+    "@types/luxon": "^1.15.2",
+    "@types/node": "^12.7.9",
+    "@types/react": "^16.9.4",
+    "typescript": "^3.6.3"
+  }
+}
