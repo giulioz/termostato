@@ -1,0 +1,4 @@
+curl -X GET http://192.168.15.20:3000/data
+
+curl -X POST http://192.168.15.20:3000/data \
+  -d '{"identifier":"relay","value":"1"}'

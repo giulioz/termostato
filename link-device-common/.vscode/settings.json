@@ -1,0 +1,9 @@
+{
+  "C_Cpp.clang_format_style": "google",
+  "files.associations": {
+    "*.c": "c",
+    "*.cpp": "cpp",
+    "algorithm": "cpp",
+    "iterator": "cpp"
+  }
+}
