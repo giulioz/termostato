@@ -103,12 +103,11 @@ module.exports = async function() {
 
   async function pushEvent(event) {
     return new Promise((resolve, reject) => {
-      redisClient.LPUSH("events", JSON.stringify(event), n => {
-        if (n === 1) {
+      redisClient.LPUSH("events", JSON.stringify(event), (err, n) => {
+        if (!err && n === 1) {
           resolve();
         } else {
-          console.warn("pushed "+ n);
-          resolve();
+          reject(err);
         }
       });
     });
@@ -122,7 +121,7 @@ module.exports = async function() {
 
   return new Promise((resolve, reject) => {
     redisClient.on("error", err => {
-      console.error(err);
+      reject(err);
     });
 
     redisClient.on("connect", () => {
