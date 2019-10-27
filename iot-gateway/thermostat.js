@@ -33,6 +33,8 @@ const defaultConfig = {
 
 module.exports = class Thermostat extends EventEmitter {
   constructor(thermostatConfig = defaultConfig) {
+    super();
+
     this.thermostatConfig = thermostatConfig;
     this.timeout = -1;
   }
