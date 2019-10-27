@@ -78,11 +78,11 @@ module.exports = async function() {
   async function getConfig() {
     const [targetTime, programming] = await Promise.all([
       tryOrDefault(
-        () => parseFloat(get(redisClient, "targetTime")),
+        async () => parseFloat(await get(redisClient, "targetTime")),
         defaultConfig.targetTime
       ),
       tryOrDefault(
-        () => JSON.parse(get(redisClient, "programming")),
+        async () => JSON.parse(await get(redisClient, "programming")),
         defaultConfig.programming
       )
     ]);
