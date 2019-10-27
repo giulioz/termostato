@@ -35,7 +35,7 @@ app.get("/stats/relay/current", async (req, res) => {
 });
 
 app.get("/config", async (req, res) => {
-  const config = database.getConfig();
+  const config = await database.getConfig();
   res.send(config);
 });
 
@@ -55,7 +55,6 @@ async function start() {
 
   const devices = await discovery(2000, 1);
   console.log("Found devices:", devices);
-
   currentDevice = devices[0];
   if (!currentDevice) {
     throw new Error("No devices found!");
