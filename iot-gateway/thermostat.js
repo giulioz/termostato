@@ -2,7 +2,7 @@ const EventEmitter = require("events");
 const devicehttp = require("./devicehttp");
 
 module.exports = class Thermostat extends EventEmitter {
-  constructor(thermostatConfig = defaultConfig) {
+  constructor(thermostatConfig) {
     super();
 
     this.thermostatConfig = thermostatConfig;

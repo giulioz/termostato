@@ -12,9 +12,8 @@ const hostname = process.env.API_HOST || "0.0.0.0";
 const app = express();
 app.use(bodyParser.json());
 
-let database;
-
-const thermostat = new Thermostat();
+let database = null;
+let thermostat = null;
 let currentDevice = null;
 
 app.get("/stats/temp/current", async (req, res) => {
@@ -51,7 +50,8 @@ app.post("/config", async (req, res) => {
 
 async function start() {
   database = await Database();
-  await database.setConfig(await database.getConfig());
+  const config = await database.getConfig();
+  await database.setConfig(config);
 
   const devices = await discovery(2000, 1);
   console.log("Found devices:", devices);
@@ -61,6 +61,7 @@ async function start() {
     throw new Error("No devices found!");
   }
 
+  thermostat = new Thermostat(config);
   thermostat.startThermostat(currentDevice.address);
 
   app.listen(port, hostname, () => console.log("HTTP API Ready"));
