@@ -73,7 +73,7 @@ async function tryOrDefault(fn, fallback) {
 
 module.exports = async function() {
   const redisClient = redis
-    .createClient(process.env.REDIS_ADDRESS || "redis://redis:7379");
+    .createClient(process.env.REDIS_ADDRESS || "redis://redis:6379");
 
   async function getConfig() {
     const [targetTime, programming] = await Promise.all([

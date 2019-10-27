@@ -4,17 +4,22 @@ services:
     build: ./iot-gateway
     ports:
       - "512:8080"
-    links:
+    networks:
+      - redis_net
+    depends_on:
       - redis
 
   redis:
     image: redis:5.0.6-alpine
     command: ["redis-server", "--appendonly", "yes"]
     hostname: redis
-    ports:
-      - "7379:6379"
+    networks:
+      - redis_net
     volumes:
       - redis_data:/data
 
 volumes:
   redis_data: {}
+
+networks:
+  redis_net:
