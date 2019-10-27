@@ -104,10 +104,11 @@ module.exports = async function() {
   async function pushEvent(event) {
     return new Promise((resolve, reject) => {
       redisClient.LPUSH("events", JSON.stringify(event), n => {
-        if (n == 1) {
+        if (n === 1) {
           resolve();
         } else {
-          reject();
+          console.warn("pushed "+ n);
+          resolve();
         }
       });
     });
