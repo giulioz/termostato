@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 
 const discovery = require("./discovery");
 const devicehttp = require("./devicehttp");
@@ -11,6 +12,7 @@ const port = parseInt(process.env.API_PORT) || 8080;
 const hostname = process.env.API_HOST || "0.0.0.0";
 const app = express();
 app.use(bodyParser.json());
+app.use(cors());
 
 let database = null;
 let thermostat = null;
