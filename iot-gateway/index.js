@@ -10,10 +10,15 @@ const hostname = process.env.API_HOST || "0.0.0.0";
 const app = express();
 
 const thermostat = new Thermostat();
+let currentDevice = null;
 
 app.get("/stats/temp/current", async (req, res) => {
-  const temp = await thermostat.getCurrentTemp();
-  res.send(temp);
+  if (currentDevice) {
+    const temp = await thermostat.getCurrentTemp(currentDevice.address);
+    res.send(temp);
+  } else {
+    res.status(404).send("No device found");
+  }
 });
 
 async function start() {
@@ -22,11 +27,11 @@ async function start() {
   const devices = await discovery(2000, 1);
   console.log("Found devices:", devices);
 
-  const firstDevice = devices[0];
-  if (!firstDevice) {
+  currentDevice = devices[0];
+  if (!currentDevice) {
     throw new Error("No devices found!");
   }
 
-  thermostat.startThermostat(firstDevice.address);
+  thermostat.startThermostat(currentDevice.address);
 }
 start();
