@@ -113,10 +113,23 @@ module.exports = async function() {
     });
   }
 
+  async function getEvents(num = 5000) {
+    return new Promise((resolve, reject) => {
+      redisClient.LRANGE("events", 0, num, (err, data) => {
+        if (!err) {
+          resolve(data);
+        } else {
+          reject(err);
+        }
+      });
+    });
+  }
+
   const API = {
     getConfig,
     setConfig,
-    pushEvent
+    pushEvent,
+    getEvents
   };
 
   return new Promise((resolve, reject) => {

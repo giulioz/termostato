@@ -31,6 +31,7 @@ module.exports = class Thermostat extends EventEmitter {
     const active = currentTemp < targetTemp;
 
     this.emit("update", {
+      timestamp: new Date().getTime,
       currentTemp,
       targetTemp,
       active

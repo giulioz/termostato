@@ -48,6 +48,15 @@ app.post("/config", async (req, res) => {
   }
 });
 
+app.get("/stats", async (req, res) => {
+  try {
+    const data = await database.getEvents();
+    res.send(data);
+  } catch (e) {
+    res.status(500).send(e);
+  }
+});
+
 async function start() {
   database = await Database();
   const config = await database.getConfig();
