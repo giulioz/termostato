@@ -107,11 +107,11 @@ module.exports = async function() {
   };
 
   return new Promise((resolve, reject) => {
-    redisClient.on("error", err => {
+    redis.on("error", err => {
       reject(err);
     });
 
-    redisClient.on("connect", () => {
+    redis.on("connect", () => {
       resolve(API);
     });
   });
