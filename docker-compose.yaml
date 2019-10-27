@@ -1,0 +1,27 @@
+version: "3"
+services:
+  # evohub-interface:
+  #   build: ./interface
+  #   ports:
+  #     - "3000:3000"
+  #   links:
+  #     - iot-gateway
+
+  iot-gateway:
+    build: ./iot-gateway
+    # ports:
+      # - "8080:8080"
+    links:
+      - redis
+
+  redis:
+    image: redis:5.0.6-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data: {}
