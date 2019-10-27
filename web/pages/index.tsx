@@ -11,7 +11,7 @@ export default function Index() {
 
   useEffect(() => {
     async function fetchData() {
-      const temp = await fetchJson("172.16.10.1:5120/stats/temp/current");
+      const temp = await fetchJson("http://172.16.10.1:5120/stats/temp/current");
       setCurrentTemp(temp);
     }
 
