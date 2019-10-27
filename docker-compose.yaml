@@ -9,8 +9,8 @@ services:
 
   iot-gateway:
     build: ./iot-gateway
-    # ports:
-      # - "8080:8080"
+    ports:
+      - "512:8080"
     links:
       - redis
 
@@ -19,7 +19,7 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     hostname: redis
     ports:
-      - "6379:6379"
+      - "7379:6379"
     volumes:
       - redis_data:/data
 
