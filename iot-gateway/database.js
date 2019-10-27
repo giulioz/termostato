@@ -59,7 +59,7 @@ async function set(redisClient, name, value) {
 async function tryOrDefault(fn, fallback) {
   try {
     const value = await fn();
-    return value;
+    return value || fallback;
   } catch (e) {
     console.warn(
       "Masked error:",
