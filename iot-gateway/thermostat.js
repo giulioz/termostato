@@ -50,6 +50,11 @@ module.exports = class Thermostat extends EventEmitter {
     return parseFloat(temp.find(t => t.identifier === "tempSensor").value);
   }
 
+  async getCurrentEnabled(address) {
+    const temp = await devicehttp.getData(address);
+    return temp.find(t => t.identifier === "relay").value === "1";
+  }
+
   async update(address) {
     const currentTemp = await this.getCurrentTemp(address);
     const targetTemp = this.getProgrammedTempNow();

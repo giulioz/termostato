@@ -21,6 +21,15 @@ app.get("/stats/temp/current", async (req, res) => {
   }
 });
 
+app.get("/stats/relay/current", async (req, res) => {
+  if (currentDevice) {
+    const temp = await thermostat.getCurrentEnabled(currentDevice.address);
+    res.send(JSON.stringify(temp));
+  } else {
+    res.status(404).send("No device found");
+  }
+});
+
 async function start() {
   app.listen(port, hostname, () => console.log("HTTP API Ready"));
 
