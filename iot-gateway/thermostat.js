@@ -51,8 +51,8 @@ module.exports = class Thermostat extends EventEmitter {
   }
 
   async update(address) {
-    const currentTemp = await getCurrentTemp(address);
-    const targetTemp = getProgrammedTempNow();
+    const currentTemp = await this.getCurrentTemp(address);
+    const targetTemp = this.getProgrammedTempNow();
     const active = currentTemp < targetTemp;
 
     this.emit("update", {
@@ -69,15 +69,15 @@ module.exports = class Thermostat extends EventEmitter {
   }
 
   async loop(address) {
-    await update(address);
-    this.timeout = setTimeout(() => loop(address), this.targetTime);
+    await this.update(address);
+    this.timeout = setTimeout(() => this.loop(address), this.targetTime);
   }
 
   startThermostat(address) {
     this.timeout = setTimeout(() => {
       this.emit("start");
 
-      loop(address);
+      this.loop(address);
     }, this.targetTime);
   }
 
