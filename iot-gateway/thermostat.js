@@ -45,7 +45,7 @@ module.exports = class Thermostat extends EventEmitter {
 
   async loop(address) {
     await this.update(address);
-    this.timeout = setTimeout(() => this.loop(address), this.targetTime);
+    this.timeout = setTimeout(() => this.loop(address), this.thermostatConfig.targetTime);
   }
 
   startThermostat(address) {
@@ -53,7 +53,7 @@ module.exports = class Thermostat extends EventEmitter {
       this.emit("start");
 
       this.loop(address);
-    }, this.targetTime);
+    }, this.thermostatConfig.targetTime);
   }
 
   stopThermostat() {
