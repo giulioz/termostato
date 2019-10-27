@@ -11,7 +11,7 @@ export default function Index() {
 
   useEffect(() => {
     async function fetchData() {
-      const temp = await fetchJson("iot-gateway:512/stats/temp/current");
+      const temp = await fetchJson("iot-gateway:5120/stats/temp/current");
       setCurrentTemp(temp);
     }
 

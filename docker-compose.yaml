@@ -3,7 +3,7 @@ services:
   web:
     build: ./web
     ports:
-      - "513:3000"
+      - "5130:3000"
     links:
       - iot-gateway
 
