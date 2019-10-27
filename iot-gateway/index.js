@@ -61,6 +61,7 @@ async function start() {
   }
 
   thermostat = new Thermostat(config);
+  thermostat.on("update", arg => database.pushEvent(arg));
   thermostat.startThermostat(currentDevice.address);
 
   app.listen(port, hostname, () => console.log("HTTP API Ready"));

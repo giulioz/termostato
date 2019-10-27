@@ -72,8 +72,9 @@ async function tryOrDefault(fn, fallback) {
 }
 
 module.exports = async function() {
-  const redisClient = redis
-    .createClient(process.env.REDIS_ADDRESS || "redis://redis:6379");
+  const redisClient = redis.createClient(
+    process.env.REDIS_ADDRESS || "redis://redis:6379"
+  );
 
   async function getConfig() {
     const [targetTime, programming] = await Promise.all([
@@ -100,14 +101,27 @@ module.exports = async function() {
     ]);
   }
 
+  async function pushEvent(event) {
+    return new Promise((resolve, reject) => {
+      redisClient.LPUSH("events", JSON.stringify(event), n => {
+        if (n == 1) {
+          resolve();
+        } else {
+          reject();
+        }
+      });
+    });
+  }
+
   const API = {
     getConfig,
-    setConfig
+    setConfig,
+    pushEvent
   };
 
   return new Promise((resolve, reject) => {
     redisClient.on("error", err => {
-      reject(err);
+      console.error(err);
     });
 
     redisClient.on("connect", () => {
