@@ -15,7 +15,7 @@ let currentDevice = null;
 app.get("/stats/temp/current", async (req, res) => {
   if (currentDevice) {
     const temp = await thermostat.getCurrentTemp(currentDevice.address);
-    res.send(temp);
+    res.send(JSON.stringify(temp));
   } else {
     res.status(404).send("No device found");
   }
