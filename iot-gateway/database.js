@@ -107,7 +107,7 @@ module.exports = async function() {
         if (!err && n === 1) {
           resolve();
         } else {
-          console.error("Error in pushEvent!", event);
+          console.error("Error in pushEvent!", event, n);
           reject(err);
         }
       });
