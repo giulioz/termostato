@@ -107,6 +107,7 @@ module.exports = async function() {
         if (!err && n === 1) {
           resolve();
         } else {
+          console.error("Error in pushEvent!", event);
           reject(err);
         }
       });
@@ -119,6 +120,7 @@ module.exports = async function() {
         if (!err) {
           resolve(data);
         } else {
+          console.error("Error in getEvents!", num);
           reject(err);
         }
       });
@@ -134,6 +136,7 @@ module.exports = async function() {
 
   return new Promise((resolve, reject) => {
     redisClient.on("error", err => {
+      console.error("Error in redis!", err);
       reject(err);
     });
 
