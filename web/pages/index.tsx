@@ -31,6 +31,7 @@ export default function Index() {
   const currentActiveText = currentActive ? "on" : "off";
   const [currentConfig, setCurrentConfig] = useState<Config | null>(null);
   const [currentStats, setCurrentStats] = useState<Stats | null>(null);
+  const [pageWidth, setPageWidth] = useState<number | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -49,6 +50,8 @@ export default function Index() {
       const statsParsed = stats.map(JSON.parse);
       setCurrentStats(statsParsed);
     }
+
+    setPageWidth(document.body.clientWidth);
 
     fetchData();
   }, []);
@@ -75,9 +78,9 @@ export default function Index() {
     <>
       <p>Current temp: {currentTemp}</p>
       <p>Active: {currentActiveText}</p>
-      {currentStats && (
+      {pageWidth && currentStats && (
         <TempChart
-          width={1300}
+          width={pageWidth}
           height={500}
           margin={{ left: 40, right: 40, top: 40, bottom: 40 }}
           data={currentStats}

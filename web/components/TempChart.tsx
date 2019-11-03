@@ -96,7 +96,7 @@ export default function TempChart({
           <AxisBottom
             top={yMax}
             scale={xScale}
-            numTicks={width > 520 ? 10 : 5}
+            numTicks={width / 40}
           />
           <AxisLeft scale={yScale} />
           <text x="-70" y="15" transform="rotate(-90)" fontSize={10}>
@@ -146,7 +146,7 @@ export default function TempChart({
                   y={0}
                   width={xScale(d.timestampEnd) - xScale(d.timestamp)}
                   height={yMax}
-                  fill="rgba(255, 0, 0, .4)"
+                  fill="rgba(0, 0, 255, .4)"
                 />
               )
           )}
