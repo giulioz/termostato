@@ -43,7 +43,7 @@ app.get("/config", async (req, res) => {
 
 app.post("/config", async (req, res) => {
   try {
-    await database.setConfig(req.body);
+    await database.setConfig(JSON.parse(req.body));
     res.status(200).send("OK");
   } catch (e) {
     res.status(500).send(e);
