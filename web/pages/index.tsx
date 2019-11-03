@@ -52,6 +52,7 @@ export default function Index() {
   async function saveConfig() {
     const req = await fetch("http://172.16.10.1:5120/config", {
       method: "POST",
+      headers: { contentType: "application/json" },
       body: JSON.stringify(currentConfig)
     });
     return req.text();
