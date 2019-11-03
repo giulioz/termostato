@@ -95,11 +95,8 @@ module.exports = async function() {
   }
 
   async function setConfig(config) {
-    console.log(
-      JSON.stringify(config.targetTime),
-      JSON.stringify(config.programming)
-    );
-    
+    console.log(config);
+
     return Promise.all([
       set(redisClient, "targetTime", JSON.stringify(config.targetTime)),
       set(redisClient, "programming", JSON.stringify(config.programming))
