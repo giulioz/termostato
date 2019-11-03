@@ -94,7 +94,9 @@ export default function TempChart({
     [filteredData, yMax]
   );
 
-  const onOff = useMemo(() => aggregateOnOff(filteredData), [filteredData]);
+  const onOff = useMemo(() => aggregateOnOff(data), [data]).filter(
+    d => d.timestamp >= now - timeSpan || d.timestampEnd >= now - timeSpan
+  );
 
   return (
     <div>

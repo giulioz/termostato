@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import TempChart from "../components/TempChart";
 
 type Config = {
@@ -34,14 +34,17 @@ export default function Index() {
   const [pageWidth, setPageWidth] = useState<number | null>(null);
 
   const [update, setUpdate] = useState(0);
+  const timeoutRef = useRef<any>();
   useEffect(() => {
     function updateTick() {
       setUpdate(u => u + 1);
-      setTimeout(updateTick, 15000);
+      timeoutRef.current = setTimeout(updateTick, 15000);
     }
 
-    setTimeout(updateTick, 15000);
-  }, []);
+    timeoutRef.current = setTimeout(updateTick, 15000);
+
+    return () => void clearTimeout(timeoutRef.current);
+  }, [setUpdate]);
 
   useEffect(() => {
     async function fetchData() {
