@@ -45,7 +45,7 @@ export default function Index() {
       const config = await fetchJson("http://172.16.10.1:5120/config");
       setCurrentConfig(config);
 
-      const stats = await fetchJson("http://172.16.10.1:5120/stats");
+      const stats = await fetchJson("http://172.16.10.1:5120/stats/100000");
       const statsParsed = stats.map(JSON.parse);
       setCurrentStats(statsParsed);
     }

@@ -1,11 +1,35 @@
 import React from "react";
 import { Group } from "@vx/group";
 import { curveBasis } from "@vx/curve";
-import { LinePath } from "@vx/shape";
+import { LinePath, Bar } from "@vx/shape";
 import { Threshold } from "@vx/threshold";
 import { scaleTime, scaleLinear } from "@vx/scale";
 import { AxisLeft, AxisBottom } from "@vx/axis";
 import { GridRows, GridColumns } from "@vx/grid";
+
+type Data = {
+  timestamp: number;
+  currentTemp: number;
+  targetTemp: number;
+  active: boolean;
+}[];
+
+function aggregateOnOff(data: Data) {
+  const sorted = data.sort((a, b) => a.timestamp - b.timestamp);
+
+  return sorted.reduce((prev, next) => {
+    const lastRecord = prev[prev.length - 1];
+
+    if (lastRecord && next.active === lastRecord.active) {
+      return [
+        ...prev.slice(0, -1),
+        { ...lastRecord, timestampEnd: next.timestamp }
+      ];
+    } else {
+      return [...prev, { ...next, timestampEnd: next.timestamp }];
+    }
+  }, []);
+}
 
 export default function TempChart({
   width,
@@ -16,12 +40,7 @@ export default function TempChart({
   width: number;
   height: number;
   margin: { left: number; top: number; right: number; bottom: number };
-  data: {
-    timestamp: number;
-    currentTemp: number;
-    targetTemp: number;
-    active: boolean;
-  }[];
+  data: Data;
 }) {
   // accessors
   const date = d => d.timestamp;
@@ -39,6 +58,8 @@ export default function TempChart({
     ],
     nice: true
   });
+
+  const onOff = aggregateOnOff(data);
 
   // bounds
   const xMax = width - margin.left - margin.right;
@@ -116,6 +137,19 @@ export default function TempChart({
             stroke="#000"
             strokeWidth={1.5}
           />
+          {onOff.map(
+            d =>
+              d.active && (
+                <Bar
+                  key={`bar-${d.timestamp}`}
+                  x={xScale(d.timestamp)}
+                  y={0}
+                  width={xScale(d.timestampEnd) - xScale(d.timestamp)}
+                  height={yMax}
+                  fill="rgba(255, 0, 0, .4)"
+                />
+              )
+          )}
         </Group>
       </svg>
     </div>
