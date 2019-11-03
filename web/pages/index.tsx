@@ -33,6 +33,16 @@ export default function Index() {
   const [currentStats, setCurrentStats] = useState<Stats | null>(null);
   const [pageWidth, setPageWidth] = useState<number | null>(null);
 
+  const [update, setUpdate] = useState(0);
+  useEffect(() => {
+    function updateTick() {
+      setUpdate(u => u + 1);
+      setTimeout(updateTick, 15000);
+    }
+
+    setTimeout(updateTick, 15000);
+  }, []);
+
   useEffect(() => {
     async function fetchData() {
       const temp = await fetchJson(

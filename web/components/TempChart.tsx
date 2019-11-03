@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Group } from "@vx/group";
 import { curveBasis } from "@vx/curve";
 import { LinePath, Bar } from "@vx/shape";
@@ -31,6 +31,20 @@ function aggregateOnOff(data: Data) {
   }, []);
 }
 
+const hourMS = 1000 * 60 * 60;
+const maxSpan = 12 * 30 * 24 * hourMS;
+const minSpan = hourMS;
+const stepsSpan = maxSpan - minSpan;
+const powFactor = 5;
+
+// accessors
+const date = d => d.timestamp;
+const currentTemp = d => d["currentTemp"];
+const targetTemp = d => d["targetTemp"];
+
+const sliderValueToTime = (value: number) =>
+  Math.round(Math.pow((100 - value) / 100, powFactor) * stepsSpan + minSpan);
+
 export default function TempChart({
   width,
   height,
@@ -42,43 +56,57 @@ export default function TempChart({
   margin: { left: number; top: number; right: number; bottom: number };
   data: Data;
 }) {
-  // accessors
-  const date = d => d.timestamp;
-  const currentTemp = d => d["currentTemp"];
-  const targetTemp = d => d["targetTemp"];
+  const [timeSpan, setTimeSpan] = useState(1000 * 60 * 60 * 24 * 2);
+  const sliderValue =
+    100 - Math.pow((timeSpan - minSpan) / stepsSpan, 1 / powFactor) * 100;
 
-  // scales
-  const xScale = scaleTime({
-    domain: [Math.min(...data.map(date)), Math.max(...data.map(date))]
-  });
-  const yScale = scaleLinear({
-    domain: [
-      Math.min(...data.map(d => Math.min(currentTemp(d), targetTemp(d)))),
-      Math.max(...data.map(d => Math.max(currentTemp(d), targetTemp(d))))
-    ],
-    nice: true
-  });
-
-  const onOff = aggregateOnOff(data);
+  const now = new Date().getTime();
+  const filteredData = data.filter(d => d.timestamp >= now - timeSpan);
 
   // bounds
   const xMax = width - margin.left - margin.right;
   const yMax = height - margin.top - margin.bottom;
 
-  xScale.range([0, xMax]);
-  yScale.range([yMax, 0]);
+  // scales
+  const xScale = useMemo(
+    () =>
+      scaleTime({
+        domain: [
+          Math.min(...filteredData.map(date)),
+          Math.max(...filteredData.map(date))
+        ]
+      }).range([0, xMax]),
+    [filteredData, xMax]
+  );
+  const yScale = useMemo(
+    () =>
+      scaleLinear({
+        domain: [
+          Math.min(
+            ...filteredData.map(d => Math.min(currentTemp(d), targetTemp(d)))
+          ),
+          Math.max(
+            ...filteredData.map(d => Math.max(currentTemp(d), targetTemp(d)))
+          )
+        ],
+        nice: true
+      }).range([yMax, 0]),
+    [filteredData, yMax]
+  );
+
+  const onOff = useMemo(() => aggregateOnOff(filteredData), [filteredData]);
 
   return (
     <div>
+      <input
+        type="range"
+        value={sliderValue}
+        onChange={e =>
+          setTimeSpan(sliderValueToTime(parseFloat(e.target.value)))
+        }
+      />
       <svg width={width} height={height}>
-        <rect
-          x={0}
-          y={0}
-          width={width}
-          height={height}
-          fill="#f3f3f3"
-          // rx={14}
-        />
+        <rect x={0} y={0} width={width} height={height} fill="#f3f3f3" />
         <Group left={margin.left} top={margin.top}>
           <GridRows
             scale={yScale}
@@ -93,17 +121,13 @@ export default function TempChart({
             stroke="#e0e0e0"
           />
           <line x1={xMax} x2={xMax} y1={0} y2={yMax} stroke="#e0e0e0" />
-          <AxisBottom
-            top={yMax}
-            scale={xScale}
-            numTicks={width / 40}
-          />
+          <AxisBottom top={yMax} scale={xScale} numTicks={width / 40} />
           <AxisLeft scale={yScale} />
           <text x="-70" y="15" transform="rotate(-90)" fontSize={10}>
             Temperature (°C)
           </text>
           <Threshold
-            data={data}
+            data={filteredData}
             x={d => xScale(date(d))}
             y0={d => yScale(currentTemp(d))}
             y1={d => yScale(targetTemp(d))}
@@ -120,7 +144,7 @@ export default function TempChart({
             }}
           />
           <LinePath
-            data={data}
+            data={filteredData}
             curve={curveBasis}
             x={d => xScale(date(d))}
             y={d => yScale(targetTemp(d))}
@@ -130,7 +154,7 @@ export default function TempChart({
             strokeDasharray="1,2"
           />
           <LinePath
-            data={data}
+            data={filteredData}
             curve={curveBasis}
             x={d => xScale(date(d))}
             y={d => yScale(currentTemp(d))}
