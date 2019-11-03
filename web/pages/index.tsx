@@ -70,12 +70,13 @@ export default function Index() {
             <input
               type="number"
               value={currentConfig.targetTime}
-              onChange={e =>
+              onChange={e => {
+                e.persist();
                 setCurrentConfig(c => ({
                   ...c,
                   targetTime: parseFloat(e.target.value)
-                }))
-              }
+                }));
+              }}
             />
           </p>
           <h4>Programming</h4>
@@ -86,9 +87,10 @@ export default function Index() {
                 <input
                   type="number"
                   value={e.temperature}
-                  onChange={e =>
-                    updateTemperature(i, parseFloat(e.target.value))
-                  }
+                  onChange={e => {
+                    e.persist();
+                    updateTemperature(i, parseFloat(e.target.value));
+                  }}
                 />
               </p>
             ))}
