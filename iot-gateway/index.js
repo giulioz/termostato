@@ -18,6 +18,15 @@ let database = null;
 let thermostat = null;
 let currentDevice = null;
 
+app.get("/stats/:num", async (req, res) => {
+  try {
+    const data = await database.getEvents(parseFloat(req.params.num));
+    res.send(data);
+  } catch (e) {
+    res.status(500).send(e);
+  }
+});
+
 app.get("/stats/temp/current", async (req, res) => {
   if (currentDevice) {
     const temp = await thermostat.getCurrentTemp(currentDevice.address);
@@ -45,15 +54,6 @@ app.post("/config", async (req, res) => {
   try {
     await database.setConfig(req.body);
     res.status(200).send("OK");
-  } catch (e) {
-    res.status(500).send(e);
-  }
-});
-
-app.get("/stats", async (req, res) => {
-  try {
-    const data = await database.getEvents();
-    res.send(data);
   } catch (e) {
     res.status(500).send(e);
   }

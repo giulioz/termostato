@@ -1,9 +1,17 @@
 import { useState, useEffect } from "react";
+import TempChart from "../components/TempChart";
 
 type Config = {
   targetTime: number;
   programming: { hour: number; temperature: number }[];
 };
+
+type Stats = {
+  timestamp: number;
+  currentTemp: number;
+  targetTemp: number;
+  active: boolean;
+}[];
 
 async function fetchJson(url: string) {
   const data = await fetch(url);
@@ -22,6 +30,7 @@ export default function Index() {
   const [currentActive, setCurrentActive] = useState(false);
   const currentActiveText = currentActive ? "on" : "off";
   const [currentConfig, setCurrentConfig] = useState<Config | null>(null);
+  const [currentStats, setCurrentStats] = useState<Stats | null>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -35,6 +44,10 @@ export default function Index() {
       setCurrentActive(active);
       const config = await fetchJson("http://172.16.10.1:5120/config");
       setCurrentConfig(config);
+
+      const stats = await fetchJson("http://172.16.10.1:5120/stats");
+      const statsParsed = stats.map(JSON.parse);
+      setCurrentStats(statsParsed);
     }
 
     fetchData();
@@ -62,6 +75,14 @@ export default function Index() {
     <>
       <p>Current temp: {currentTemp}</p>
       <p>Active: {currentActiveText}</p>
+      {currentStats && (
+        <TempChart
+          width={1300}
+          height={500}
+          margin={{ left: 40, right: 40, top: 40, bottom: 40 }}
+          data={currentStats}
+        />
+      )}
       <hr />
       {currentConfig && (
         <>
