@@ -34,10 +34,13 @@ export default function Index() {
   const [pageWidth, setPageWidth] = useState<number | null>(null);
 
   const [update, setUpdate] = useState(0);
+  function forceUpdate() {
+    setUpdate(u => u + 1);
+  }
   const timeoutRef = useRef<any>();
   useEffect(() => {
     function updateTick() {
-      setUpdate(u => u + 1);
+      forceUpdate();
       timeoutRef.current = setTimeout(updateTick, 15000);
     }
 
@@ -67,7 +70,7 @@ export default function Index() {
     setPageWidth(document.body.clientWidth);
 
     fetchData();
-  }, []);
+  }, [update]);
 
   function updateTemperature(i: number, value: number) {
     setCurrentConfig(c => ({

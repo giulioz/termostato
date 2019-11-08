@@ -18,6 +18,16 @@ let database = null;
 let thermostat = null;
 let currentDevice = null;
 
+function reloadThermostat(config) {
+  if (thermostat) {
+    thermostat.stopThermostat();
+  }
+
+  thermostat = new Thermostat(config);
+  thermostat.on("update", arg => database.pushEvent(arg));
+  thermostat.startThermostat(currentDevice.address);
+}
+
 app.get("/stats/:num", async (req, res) => {
   try {
     const data = await database.getEvents(parseFloat(req.params.num));
@@ -53,6 +63,10 @@ app.get("/config", async (req, res) => {
 app.post("/config", async (req, res) => {
   try {
     await database.setConfig(req.body);
+
+    const config = await database.getConfig();
+    reloadThermostat(config);
+    
     res.status(200).send("OK");
   } catch (e) {
     res.status(500).send(e);
@@ -71,9 +85,7 @@ async function start() {
     throw new Error("No devices found!");
   }
 
-  thermostat = new Thermostat(config);
-  thermostat.on("update", arg => database.pushEvent(arg));
-  thermostat.startThermostat(currentDevice.address);
+  reloadThermostat(config);
 
   app.listen(port, hostname, () => console.log("HTTP API Ready"));
 }
