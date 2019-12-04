@@ -11,8 +11,9 @@ module.exports = class Thermostat extends EventEmitter {
 
   getProgrammedTempNow() {
     const hour = new Date().getHours();
-    return this.thermostatConfig.programming.find(p => p.hour === hour)
-      .temperature;
+    // return this.thermostatConfig.programming.find(p => p.hour === hour)
+    //   .temperature;
+    return this.thermostatConfig.programming[hour].temperature;
   }
 
   async getCurrentTemp(address) {
@@ -46,7 +47,10 @@ module.exports = class Thermostat extends EventEmitter {
 
   async loop(address) {
     await this.update(address);
-    this.timeout = setTimeout(() => this.loop(address), this.thermostatConfig.targetTime);
+    this.timeout = setTimeout(
+      () => this.loop(address),
+      this.thermostatConfig.targetTime
+    );
   }
 
   startThermostat(address) {

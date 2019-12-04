@@ -41,10 +41,10 @@ export default function Index() {
   useEffect(() => {
     function updateTick() {
       forceUpdate();
-      timeoutRef.current = setTimeout(updateTick, 15000);
+      timeoutRef.current = setTimeout(updateTick, 60000);
     }
 
-    timeoutRef.current = setTimeout(updateTick, 15000);
+    timeoutRef.current = setTimeout(updateTick, 60000);
 
     return () => void clearTimeout(timeoutRef.current);
   }, [setUpdate]);

@@ -13,6 +13,9 @@ services:
       - "5120:8080"
     networks:
       - redis_net
+    volumes:
+      - "/etc/timezone:/etc/timezone:ro"
+      - "/etc/localtime:/etc/localtime:ro"
     depends_on:
       - redis
 

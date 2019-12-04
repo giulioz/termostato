@@ -61,7 +61,9 @@ export default function TempChart({
     100 - Math.pow((timeSpan - minSpan) / stepsSpan, 1 / powFactor) * 100;
 
   const now = new Date().getTime();
-  const filteredData = data.filter(d => d.timestamp >= now - timeSpan);
+  const filteredData = data
+    .sort((a, b) => a.timestamp - b.timestamp)
+    .filter(d => d.timestamp >= now - timeSpan);
 
   // bounds
   const xMax = width - margin.left - margin.right;
