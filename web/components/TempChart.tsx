@@ -45,7 +45,7 @@ const targetTemp = d => d["targetTemp"];
 const sliderValueToTime = (value: number) =>
   Math.round(Math.pow((100 - value) / 100, powFactor) * stepsSpan + minSpan);
 
-export default function TempChart({
+export default React.memo(function TempChart({
   width,
   height,
   margin,
@@ -182,4 +182,4 @@ export default function TempChart({
       </svg>
     </div>
   );
-}
+});
