@@ -7,6 +7,7 @@ module.exports = class Thermostat extends EventEmitter {
 
     this.thermostatConfig = thermostatConfig;
     this.timeout = -1;
+    this.enabled = false;
   }
 
   getProgrammedTempNow() {
@@ -46,19 +47,23 @@ module.exports = class Thermostat extends EventEmitter {
   }
 
   async loop(address) {
-    await this.update(address);
-    this.timeout = setTimeout(
-      () => this.loop(address),
-      this.thermostatConfig.targetTime
-    );
+    if (this.enabled) {
+      await this.update(address);
+      this.timeout = setTimeout(
+        () => this.loop(address),
+        this.thermostatConfig.targetTime
+      );
+    }
   }
 
   startThermostat(address) {
+    this.enabled = true;
     this.emit("start");
     this.loop(address);
   }
 
   stopThermostat() {
+    this.enabled = false;
     clearTimeout(this.timeout);
     this.emit("stop");
   }
