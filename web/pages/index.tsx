@@ -97,7 +97,8 @@ export default function Index() {
 
   return (
     <>
-      <p>Current target: {currentTarget}</p>
+      <p>Current hour: {currentTarget[0]}</p>
+      <p>Current target: {currentTarget[1]}</p>
       <p>Current temp: {currentTemp}</p>
       <p>Active: {currentActiveText}</p>
       {pageWidth && currentStats && (
