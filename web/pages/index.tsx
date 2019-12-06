@@ -26,6 +26,7 @@ const boxStyle = {
 };
 
 export default function Index() {
+  const [currentTarget, setCurrentTarget] = useState("");
   const [currentTemp, setCurrentTemp] = useState("");
   const [currentActive, setCurrentActive] = useState(false);
   const currentActiveText = currentActive ? "on" : "off";
@@ -51,6 +52,10 @@ export default function Index() {
 
   useEffect(() => {
     async function fetchData() {
+      const target = await fetchJson(
+        "http://172.16.10.1:5120/stats/target/current"
+      );
+      setCurrentTarget(target);
       const temp = await fetchJson(
         "http://172.16.10.1:5120/stats/temp/current"
       );
@@ -92,6 +97,7 @@ export default function Index() {
 
   return (
     <>
+      <p>Current target: {currentTarget}</p>
       <p>Current temp: {currentTemp}</p>
       <p>Active: {currentActiveText}</p>
       {pageWidth && currentStats && (

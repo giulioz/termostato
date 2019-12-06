@@ -37,6 +37,17 @@ app.get("/stats/:num", async (req, res) => {
   }
 });
 
+app.get("/stats/target/current", async (req, res) => {
+  if (currentDevice) {
+    const hour = new Date().getHours();
+    const temp = this.thermostatConfig.programming.find(p => p.hour === hour)
+      .temperature;
+    res.send(JSON.stringify(temp));
+  } else {
+    res.status(404).send("No device found");
+  }
+});
+
 app.get("/stats/temp/current", async (req, res) => {
   if (currentDevice) {
     const temp = await thermostat.getCurrentTemp(currentDevice.address);
@@ -66,7 +77,7 @@ app.post("/config", async (req, res) => {
 
     const config = await database.getConfig();
     reloadThermostat(config);
-    
+
     res.status(200).send("OK");
   } catch (e) {
     res.status(500).send(e);

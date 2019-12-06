@@ -12,9 +12,8 @@ module.exports = class Thermostat extends EventEmitter {
 
   getProgrammedTempNow() {
     const hour = new Date().getHours();
-    // return this.thermostatConfig.programming.find(p => p.hour === hour)
-    //   .temperature;
-    return this.thermostatConfig.programming[hour].temperature;
+    return this.thermostatConfig.programming.find(p => p.hour === hour)
+      .temperature;
   }
 
   async getCurrentTemp(address) {
