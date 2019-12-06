@@ -40,9 +40,10 @@ app.get("/stats/:num", async (req, res) => {
 app.get("/stats/target/current", async (req, res) => {
   if (currentDevice) {
     const hour = new Date().getHours();
-    const temp = this.thermostatConfig.programming.find(p => p.hour === hour)
-      .temperature;
-    res.send(JSON.stringify(temp));
+    const temp = thermostat.thermostatConfig.programming.find(
+      p => p.hour === hour
+    ).temperature;
+    res.send(JSON.stringify([hour, temp]));
   } else {
     res.status(404).send("No device found");
   }
