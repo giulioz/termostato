@@ -9,10 +9,12 @@ module.exports = class Thermometer extends EventEmitter {
 
   async getCurrentTempHumidity(address) {
     const data = await devicehttp.getData(address);
-    const [temp, humidity] = data
-      .find(t => t.identifier === "dhtSensor")
-      .split(";")
-      .map(parseFloat);
+    const record = data.find(t => t.identifier === "dhtSensor");
+    if (!record) {
+      return { temp: NaN, humidity: NaN };
+    }
+
+    const [temp, humidity] = record.value.split(";").map(parseFloat);
     return { temp, humidity };
   }
 
@@ -28,6 +30,6 @@ module.exports = class Thermometer extends EventEmitter {
 
   async loop(address) {
     await this.update(address);
-    this.timeout = setTimeout(() => this.loop(address), updateTime);
+    this.timeout = setTimeout(() => this.loop(address), this.updateTime);
   }
 };
