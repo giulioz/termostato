@@ -1,4 +1,7 @@
-curl -X GET http://192.168.15.20:3000/data
+curl -X GET http://192.168.15.85:3000/data
 
-curl -X POST http://192.168.15.20:3000/data \
+curl -X POST http://192.168.15.85:3000/data \
   -d '{"identifier":"relay","value":"1"}'
+
+curl -X POST http://192.168.15.85:3000/connection \
+  -d '{"ssid":"XXXXX","password":"XXXXX"}'

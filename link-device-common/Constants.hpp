@@ -4,8 +4,8 @@
 /**************************
   User defined variables
 **************************/
-#define DEVICE_SERIAL "0000"
-#define FIRMWARE_VERSION "0.1"
+#define DEVICE_SERIAL "0001"
+#define FIRMWARE_VERSION "0.2"
 
 #define WIFI_FIXED false
 #define WIFI_FIXED_SSID ""

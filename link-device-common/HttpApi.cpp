@@ -64,7 +64,7 @@ static void handlePostIdentifier() {
 // GET /data
 static void handleGetData() {
   StaticJsonBuffer<JSON_ARRAY_SIZE(PROVIDERS_COUNT) +
-                   PROVIDERS_COUNT * JSON_OBJECT_SIZE(3)>
+                   PROVIDERS_COUNT * JSON_OBJECT_SIZE(10)>
       jsonBuffer;
   JsonArray& root = jsonBuffer.createArray();
 
