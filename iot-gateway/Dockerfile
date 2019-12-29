@@ -1,5 +1,5 @@
 FROM node:10
-RUN npm -g install yarn pm2
+RUN npm -g install pm2
 
 WORKDIR /usr/src/app
 COPY package*.json ./
