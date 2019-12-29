@@ -8,6 +8,7 @@
 #include "AnalogProvider.hpp"
 #include "DigitalProvider.hpp"
 #include "TempProvider.hpp"
+#include "DHTProvider.hpp"
 
 namespace DataManager {
 
