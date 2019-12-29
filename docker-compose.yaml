@@ -6,13 +6,15 @@ services:
       - "5130:3000"
     links:
       - iot-gateway
+    networks:
+      - local_net
 
   iot-gateway:
     build: ./iot-gateway
     ports:
       - "5120:8080"
     networks:
-      - redis_net
+      - local_net
     volumes:
       - "/etc/timezone:/etc/timezone:ro"
       - "/etc/localtime:/etc/localtime:ro"
@@ -24,11 +26,11 @@ services:
     command: ["redis-server", "--appendonly", "yes"]
     hostname: redis
     networks:
-      - redis_net
+      - local_net
     volumes:
       - redis_data:/data
 
 volumes:
   redis_data: {}
 networks:
-  redis_net:
+  local_net:
