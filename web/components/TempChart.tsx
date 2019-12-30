@@ -102,13 +102,16 @@ export default React.memo(function TempChart({
 
   return (
     <div>
-      <input
-        type="range"
-        value={sliderValue}
-        onChange={e =>
-          setTimeSpan(sliderValueToTime(parseFloat(e.target.value)))
-        }
-      />
+      <div>
+        Time:
+        <input
+          type="range"
+          value={sliderValue}
+          onChange={e =>
+            setTimeSpan(sliderValueToTime(parseFloat(e.target.value)))
+          }
+        />
+      </div>
       <svg width={width} height={height}>
         <rect x={0} y={0} width={width} height={height} fill="#f3f3f3" />
         <Group left={margin.left} top={margin.top}>
