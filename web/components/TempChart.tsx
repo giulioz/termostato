@@ -80,7 +80,7 @@ export default React.memo(function TempChart({
       }).range([0, xMax]),
     [filteredData, xMax]
   );
-  const yScale = useMemo(
+  const yScaleTemp = useMemo(
     () =>
       scaleLinear({
         domain: [
@@ -116,7 +116,7 @@ export default React.memo(function TempChart({
         <rect x={0} y={0} width={width} height={height} fill="#f3f3f3" />
         <Group left={margin.left} top={margin.top}>
           <GridRows
-            scale={yScale}
+            scale={yScaleTemp}
             width={xMax}
             height={yMax}
             stroke="#e0e0e0"
@@ -129,15 +129,15 @@ export default React.memo(function TempChart({
           />
           <line x1={xMax} x2={xMax} y1={0} y2={yMax} stroke="#e0e0e0" />
           <AxisBottom top={yMax} scale={xScale} numTicks={width / 40} />
-          <AxisLeft scale={yScale} />
+          <AxisLeft scale={yScaleTemp} />
           <text x="-70" y="15" transform="rotate(-90)" fontSize={10}>
             Temperature (°C)
           </text>
           <Threshold
             data={filteredData}
             x={d => xScale(date(d))}
-            y0={d => yScale(currentTemp(d))}
-            y1={d => yScale(targetTemp(d))}
+            y0={d => yScaleTemp(currentTemp(d))}
+            y1={d => yScaleTemp(targetTemp(d))}
             clipAboveTo={0}
             clipBelowTo={yMax}
             curve={curveBasis}
@@ -154,7 +154,7 @@ export default React.memo(function TempChart({
             data={filteredData}
             curve={curveBasis}
             x={d => xScale(date(d))}
-            y={d => yScale(targetTemp(d))}
+            y={d => yScaleTemp(targetTemp(d))}
             stroke="#000"
             strokeWidth={1.5}
             strokeOpacity={0.8}
@@ -164,7 +164,7 @@ export default React.memo(function TempChart({
             data={filteredData}
             curve={curveBasis}
             x={d => xScale(date(d))}
-            y={d => yScale(currentTemp(d))}
+            y={d => yScaleTemp(currentTemp(d))}
             stroke="#000"
             strokeWidth={1.5}
           />
