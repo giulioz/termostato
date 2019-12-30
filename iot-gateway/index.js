@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const proxy = require("express-http-proxy");
 
 const discovery = require("./discovery");
 const devicehttp = require("./devicehttp");
@@ -10,6 +11,7 @@ const Database = require("./database");
 
 const port = parseInt(process.env.API_PORT) || 8080;
 const hostname = process.env.API_HOST || "0.0.0.0";
+const proxyURL = process.env.PROXY_URL || "http://web:3000";
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
@@ -84,6 +86,8 @@ app.post("/config", async (req, res) => {
     res.status(500).send(e);
   }
 });
+
+app.use(proxy(proxyURL));
 
 async function start() {
   database = await Database();
