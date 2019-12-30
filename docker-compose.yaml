@@ -2,8 +2,6 @@ version: "2"
 services:
   web:
     build: ./web
-    ports:
-      - "5130:3000"
     links:
       - iot-gateway
     networks:

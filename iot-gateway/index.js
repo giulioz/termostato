@@ -5,7 +5,6 @@ const cors = require("cors");
 const proxy = require("express-http-proxy");
 
 const discovery = require("./discovery");
-const devicehttp = require("./devicehttp");
 const Thermostat = require("./thermostat");
 const Database = require("./database");
 
