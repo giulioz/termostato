@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from "react";
+import { Grid } from "@material-ui/core";
+
 import TempChart from "../components/TempChart";
+import InfoBox from "../components/InfoBox";
 
 type Config = {
   targetTime: number;
@@ -97,10 +100,21 @@ export default function Index() {
 
   return (
     <>
-      <p>Current hour: {currentTarget[0]}</p>
-      <p>Current target: {currentTarget[1]}</p>
-      <p>Current temp: {currentTemp}</p>
-      <p>Active: {currentActiveText}</p>
+      <Grid container spacing={2}>
+        <Grid item>
+          <InfoBox title="Current hour" value={currentTarget[0]} />
+        </Grid>
+        <Grid item>
+          <InfoBox title="Current target" value={currentTarget[1]} />
+        </Grid>
+        <Grid item>
+          <InfoBox title="Current temp" value={currentTemp} />
+        </Grid>
+        <Grid item>
+          <InfoBox title="Active" value={currentActiveText} />
+        </Grid>
+      </Grid>
+
       {pageWidth && currentStats && (
         <TempChart
           width={pageWidth}
