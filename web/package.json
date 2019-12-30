@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "@material-ui/core": "^4.8.1",
     "@vx/axis": "^0.0.192",
     "@vx/curve": "^0.0.192",
     "@vx/grid": "^0.0.192",

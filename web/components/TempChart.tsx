@@ -103,7 +103,7 @@ export default React.memo(function TempChart({
   return (
     <div>
       <div>
-        Time:
+        Time:{" "}
         <input
           type="range"
           value={sliderValue}

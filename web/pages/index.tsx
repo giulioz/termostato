@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from "react";
-import Head from "next/head";
 import TempChart from "../components/TempChart";
 
 type Config = {
@@ -98,9 +97,6 @@ export default function Index() {
 
   return (
     <>
-      <Head>
-        <link href="/static/style.css" rel="stylesheet" />
-      </Head>
       <p>Current hour: {currentTarget[0]}</p>
       <p>Current target: {currentTarget[1]}</p>
       <p>Current temp: {currentTemp}</p>
