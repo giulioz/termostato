@@ -149,6 +149,7 @@ export default function Index() {
           <button onClick={saveConfig}>Save</button>
         </>
       )}
+      <p>Made with ❤️ by Giulio Zausa.</p>
     </>
   );
 }
