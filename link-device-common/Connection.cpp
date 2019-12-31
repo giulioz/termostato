@@ -21,9 +21,11 @@ static bool tryConnection(const char* ssid, const char* password) {
 }
 
 void Connection::init() {
-  if (!Config::get()->WIFI_CONFIGURED) {
+  if (WIFI_FIXED && tryConnection(WIFI_FIXED_SSID, WIFI_FIXED_PASSWORD)) {
+    Serial.println("Fixed SSID: WiFi mode");
+  } else if (!Config::get()->WIFI_CONFIGURED) {
     WiFi.softAP(AP_SSID, AP_PASSWORD);
-      Serial.println("AP mode");
+    Serial.println("AP mode");
   } else {
     if (!tryConnection(Config::get()->WIFI_SSID,
                        Config::get()->WIFI_PASSWORD)) {

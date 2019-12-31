@@ -7,6 +7,10 @@
 #define DEVICE_SERIAL "0000"
 #define FIRMWARE_VERSION "0.1"
 
+#define WIFI_FIXED false
+#define WIFI_FIXED_SSID ""
+#define WIFI_FIXED_PASSWORD ""
+
 /**************************
   Advanced constants
 **************************/
