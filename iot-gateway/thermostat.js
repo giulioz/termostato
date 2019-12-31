@@ -27,21 +27,25 @@ module.exports = class Thermostat extends EventEmitter {
   }
 
   async update(address) {
-    const currentTemp = await this.getCurrentTemp(address);
-    const targetTemp = this.getProgrammedTempNow();
-    const active = currentTemp < targetTemp;
+    try {
+      const currentTemp = await this.getCurrentTemp(address);
+      const targetTemp = this.getProgrammedTempNow();
+      const active = currentTemp < targetTemp;
 
-    this.emit("update", {
-      timestamp: new Date().getTime(),
-      currentTemp,
-      targetTemp,
-      active
-    });
+      this.emit("update", {
+        timestamp: new Date().getTime(),
+        currentTemp,
+        targetTemp,
+        active
+      });
 
-    if (active) {
-      await devicehttp.setData(address, "relay", "1");
-    } else {
-      await devicehttp.setData(address, "relay", "0");
+      if (active) {
+        await devicehttp.setData(address, "relay", "1");
+      } else {
+        await devicehttp.setData(address, "relay", "0");
+      }
+    } catch (e) {
+      console.error(e);
     }
   }
 
